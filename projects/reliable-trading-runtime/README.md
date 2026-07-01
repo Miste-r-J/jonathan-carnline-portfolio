@@ -4,7 +4,6 @@ I built this system to solve a problem I kept running into: a trading process ca
 
 This repository contains the actual source I use to train and evaluate models, replay historical sessions, process live market bars, apply entry and account-level controls, send orders through a Python-to-C# NinjaTrader bridge, reconcile execution state, and produce an evidence trail I can audit after a run.
 
-This is independent engineering work. It is not a claim of employment in financial technology, a finished commercial product, or investment advice.
 
 ## What I built
 
@@ -108,10 +107,6 @@ python -m pytest `
   trading_system\runtime_engine\tests\test_config_no_duplicate_keys.py `
   trading_system\runtime_engine\tests\test_prop_guardrails_integration.py -q
 ```
-
-## What I would discuss in an interview
-
-I can walk through a signal from bar ingestion to final fill evidence, explain why I separated desired action from governed action, show how the Python and C# sides recover after a disconnect, and explain how the ledgers identify the exact stage where a run failed. I can also discuss the tradeoffs in the current design, including the size of the main runtime module and how I would split it into smaller services without weakening its safety invariants.
 
 ## Public-repository boundaries
 
