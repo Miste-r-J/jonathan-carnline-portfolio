@@ -31,9 +31,3 @@ public/                             downloadable resume
 projects/reliable-trading-runtime/  actual engineering project source
 .github/workflows/                  site deployment and project checks
 ```
-
-## Public-repository boundary
-
-The source, tests, configuration structure, and technical explanations are public. Credentials, account identifiers, webhook URLs, private keys, raw logs, datasets, trained model binaries, generated runs, and machine-specific secrets are excluded.
-
-The technical project is independent work. My paid operations experience is listed separately on the portfolio and resume.
