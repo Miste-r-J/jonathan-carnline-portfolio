@@ -6,7 +6,9 @@ Portfolio for operations technology, automation, application support, production
 
 - `src/` — React/Vite portfolio site.
 - `case-studies/reliable-event-bridge/` — cleaned reliability case study with runnable tests.
+- `case-studies/bot-runtime-proof/` — recruiter-safe proof package selected from the private bot repo.
 - `public/reliable-event-bridge.zip` — downloadable copy of the case study.
+- `public/bot-runtime-proof.zip` — downloadable copy of the bot-runtime proof package.
 - `public/Jonathan_Carnline_Technical_Resume.pdf` — resume download.
 
 ## What this repo intentionally excludes
@@ -47,3 +49,15 @@ This repo includes `.github/workflows/pages.yml`. After pushing to a GitHub repo
 - Education is stated as coursework with 30 semester credits completed.
 - Trading credentials, account identifiers, strategies, private infrastructure details, and private research logic are excluded.
 - Project claims must remain traceable to the career evidence inventory in the parent resume workspace.
+
+## Bot repo proof packages
+
+The public proof package is split into individual folders:
+
+- execution safety;
+- NinjaTrader bridge integration;
+- audit bundle ingestion;
+- feed observability;
+- Discord operations taskboard.
+
+These came from a local audit of `C:\Users\miste\Documents\bot`, but only safe summaries and implementation patterns were published.

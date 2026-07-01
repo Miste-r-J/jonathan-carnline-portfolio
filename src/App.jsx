@@ -55,6 +55,32 @@ const projects = [
   },
   {
     number: "02",
+    id: "execution-safety",
+    title: "Execution Safety System",
+    subtitle: "Fail-closed runtime checks for live operations",
+    image: reliabilityDiagram,
+    problem:
+      "The runtime needed to separate real execution truth from surface-level status so bad state could not quietly turn into a bad action.",
+    work:
+      "Built guardrails around stale snapshots, late fills, duplicate events, protection checks, lockouts, live-feed freshness, and status reporting.",
+    verification:
+      "Backed the work with regression tests around reconciliation, stale data, feed liveness, PnL truth, protection state, and lockout behavior.",
+    stack: ["Python", "pytest", "JSONL", "CSV", "State machines", "Incident response"],
+    notes: [
+      "Treated signal, gate, acknowledgement, fill, snapshot, and ledger state as separate evidence.",
+      "Blocked new action when the system could not prove the live path was safe.",
+      "Published only the engineering pattern; production strategy logic and raw run data stayed private.",
+    ],
+    proof: {
+      title: "Bot runtime proof package",
+      summary:
+        "Five public-safe notes pulled from the private bot repo audit: safety, bridge, ingestion, feed observability, and task tracking.",
+      facts: ["Selected from local bot repo audit", "No account IDs or private logs", "Recruiter-readable proof folders"],
+      download: assetPath("bot-runtime-proof.zip"),
+    },
+  },
+  {
+    number: "03",
     id: "taskboard",
     title: "Discord Operations Taskboard",
     subtitle: "Keeping work organized across long-running tasks",
@@ -71,9 +97,16 @@ const projects = [
       "Moved approval-gated work into task state instead of leaving it buried in chat history.",
       "Required task-state evidence before calling broad cleanup work finished.",
     ],
+    proof: {
+      title: "Public taskboard notes",
+      summary:
+        "A safe writeup of the task-state pattern, handoff fields, approval state, and evidence-first completion rules.",
+      facts: ["Task lineage", "Approval/waiting states", "Startup repair checks"],
+      download: assetPath("bot-runtime-proof.zip"),
+    },
   },
   {
-    number: "03",
+    number: "04",
     id: "bridge",
     title: "Windows-to-Linux Operations Bridge",
     subtitle: "Local execution, controlled cloud visibility",
@@ -90,6 +123,13 @@ const projects = [
       "Used heartbeat/state files so availability was observable rather than assumed.",
       "Staged reverse access behind Windows SSH-server readiness instead of opening an incomplete path.",
     ],
+    proof: {
+      title: "Bridge and ingestion notes",
+      summary:
+        "Safe notes from the bot audit covering protocol shape, queue behavior, audit-bundle ingestion, and status evidence.",
+      facts: ["Python/C# bridge", "Source hashing", "Structured run evidence"],
+      download: assetPath("bot-runtime-proof.zip"),
+    },
   },
 ];
 

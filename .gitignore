@@ -20,3 +20,4 @@ __pycache__/
 # Private or generated archives should not be committed by accident.
 *.zip
 !public/reliable-event-bridge.zip
+!public/bot-runtime-proof.zip
