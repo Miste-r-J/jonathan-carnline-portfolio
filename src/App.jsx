@@ -20,7 +20,7 @@ import {
 
 import heroDiagram from "./assets/hero-systems-architecture.png";
 import reliabilityDiagram from "./assets/realtime-reliability.png";
-import agentDiagram from "./assets/agent-orchestration.png";
+import taskboardDiagram from "./assets/discord-taskboard.png";
 import bridgeDiagram from "./assets/windows-linux-bridge.png";
 
 const EMAIL = "CarnlineJonathan@gmail.com";
@@ -29,46 +29,46 @@ const projects = [
   {
     number: "01",
     id: "reliability",
-    title: "Real-Time Trading Systems Reliability",
+    title: "Real-Time Trading Reliability",
     subtitle: "Python runtime + C# NinjaTrader integration",
     image: reliabilityDiagram,
     problem:
-      "A real-time execution path could look healthy while signals, safety gates, transport state, broker state, and actual fills disagreed.",
+      "A live execution path could look healthy on the surface while signals, safety checks, bridge state, and actual fills did not agree.",
     work:
-      "Developed and operated a Python/C# event-driven system with live, paper, replay, and backfill workflows. Hardened client-order idempotency, fail-closed correlation, reconnect behavior, stale-data guards, protection checks, and kill-switch controls.",
+      "Built and operated a Python/C# runtime with live, paper, replay, and backfill workflows. I tightened the order IDs, reconnect behavior, stale-data checks, protection checks, and kill-switch controls.",
     verification:
-      "Built an evidence trail across signals, gates, execution decisions, orders, fills, positions, health summaries, and PnL so failures could be traced to the actual layer that broke.",
+      "Kept a clear evidence trail across signals, gates, order decisions, orders, fills, positions, health summaries, and PnL so I could trace the real failure point.",
     stack: ["Python", "C#", "PowerShell", "pandas", "JSONL / CSV", "NinjaTrader 8"],
     notes: [
       "Separated readiness, intent, acknowledgement, and fill evidence instead of treating a connected bridge as proof of execution.",
-      "Used permanent client-order ID replay protection and conservative reconciliation semantics to reduce duplicate or ghost-order risk.",
-      "Kept public-facing details architecture-level; account identifiers, strategies, credentials, and proprietary model logic are excluded.",
+      "Used permanent order IDs and conservative recovery rules to reduce duplicate or ghost-order risk.",
+      "Kept the public version high-level; account details, strategies, credentials, and private research are not included.",
     ],
     proof: {
       title: "Sanitized reliability proof",
       summary:
-        "A runnable, domain-neutral Python reference implementation demonstrates fail-closed handshakes, connection generations, replay suppression, bounded queues, strict receipt correlation, reconcile-only recovery, and structured lifecycle evidence.",
-      facts: ["11 automated contract tests", "Python 3.11-3.13 CI workflow", "No production strategy or research source"],
+        "A runnable Python example shows the reliability patterns without exposing the private trading logic.",
+      facts: ["11 passing tests", "Python 3.11-3.13 test workflow", "No production strategy or private research"],
       download: "/reliable-event-bridge.zip",
     },
   },
   {
     number: "02",
-    id: "orchestration",
-    title: "Stella / OpenClaw Agent Orchestration",
-    subtitle: "Durable task state for agentic work",
-    image: agentDiagram,
+    id: "taskboard",
+    title: "Discord Operations Taskboard",
+    subtitle: "Keeping work organized across long-running tasks",
+    image: taskboardDiagram,
     problem:
-      "Discord-driven work needed continuity, delegation, approvals, memory, and proof-oriented completion across sessions and specialized workers.",
+      "Long-running Discord work needed a way to keep tasks, owners, approvals, notes, and status from getting lost between sessions.",
     work:
-      "Designed a taskboard-backed workflow connecting Discord ingress, cognition/orchestration, durable memory, worker roles, and externally waiting states.",
+      "Built a taskboard-style workflow that tracked the original request, parent/child work, worker role, report channel, approval status, and waiting state.",
     verification:
-      "Implemented parent/child lineage, role-aware routing, task-aware memory commits, approval boundaries, and startup repair for stale or corrupted session state.",
-    stack: ["Python", "Discord", "SQLite", "JSON", "Task orchestration", "Durable memory"],
+      "Tested the flow around startup repair, stale task state, waiting work, and handoffs so the current state could be checked instead of guessed.",
+    stack: ["Python", "Discord", "SQLite", "JSON", "Task tracking", "Runbooks"],
     notes: [
-      "Preserved source task, parent task, report channel, and worker role through delegated work.",
-      "Modeled approval-gated work as durable task state instead of losing it in conversational context.",
-      "Required runtime and task-state evidence before declaring broad finalization complete.",
+      "Kept the source task, parent task, report channel, and worker role attached to the work.",
+      "Moved approval-gated work into task state instead of leaving it buried in chat history.",
+      "Required task-state evidence before calling broad cleanup work finished.",
     ],
   },
   {
@@ -78,14 +78,14 @@ const projects = [
     subtitle: "Local execution, controlled cloud visibility",
     image: bridgeDiagram,
     problem:
-      "Selected local runtime outputs needed to reach a cloud-hosted assistant without moving proprietary model execution off the Windows machine.",
+      "Selected local runtime outputs needed to reach a cloud server without moving private execution off the Windows machine.",
     work:
       "Automated an allowlisted SSH/SFTP push path with PowerShell scheduled tasks, heartbeat files, a Python watcher, and a Linux systemd service.",
     verification:
       "Validated the scheduled transfer path and cloud-side watcher while accounting for PowerShell 5 compatibility and cross-platform UTF-8/JSON behavior.",
     stack: ["PowerShell", "Python", "SSH / SFTP", "Linux", "systemd", "DigitalOcean"],
     notes: [
-      "Transferred only an explicit allowlist of artifacts and kept model execution local.",
+      "Transferred only an explicit allowlist of files and kept private execution local.",
       "Used heartbeat/state files so availability was observable rather than assumed.",
       "Staged reverse access behind Windows SSH-server readiness instead of opening an incomplete path.",
     ],
@@ -133,8 +133,8 @@ function Header() {
   return (
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Jonathan Carnline home">
-        <span>ENGINEERING FIELD NOTES</span>
-        <small>Systems. Automation. Reliability.</small>
+        <span>JONATHAN CARNLINE</span>
+        <small>Operations. Automation. Reliability.</small>
       </a>
       <button className="menu-button" onClick={() => setOpen((value) => !value)} aria-label="Toggle navigation" aria-expanded={open}>
         {open ? <X size={24} /> : <List size={24} />}
@@ -242,11 +242,11 @@ export function App() {
       <main id="top">
         <section className="hero in-view" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <p className="eyebrow">Systems &amp; automation engineering</p>
+            <p className="eyebrow">Operations, automation, and reliability</p>
             <h1 id="hero-title">Jonathan Carnline</h1>
-            <p className="hero-statement">I build reliable systems where software meets operations.</p>
+            <p className="hero-statement">I build reliable tools where software meets real operations.</p>
             <p className="hero-summary">
-              I turn complex integrations into dependable systems with clear state, strong safeguards, and evidence teams can trust.
+              I like work where the details matter: clear status, safe controls, clean handoffs, and proof that the work actually ran.
             </p>
             <div className="hero-actions">
               <a className="button primary" href="#work">Read the work <ArrowRight size={18} weight="bold" /></a>
@@ -256,8 +256,8 @@ export function App() {
             </div>
           </div>
           <figure className="hero-figure">
-            <img src={heroDiagram} alt="Isometric illustration of connected applications, automation, observability, and data systems" />
-            <figcaption>Design for clarity. Build for change.</figcaption>
+            <img src={heroDiagram} alt="Connected applications, automation, observability, and data tools" />
+            <figcaption>Build it clearly. Prove it works.</figcaption>
           </figure>
         </section>
 
@@ -278,7 +278,7 @@ export function App() {
           <div className="section-heading">
             <p className="eyebrow">Selected engineering work</p>
             <h2 id="work-title">Proof before polish.</h2>
-            <p>Each case study is framed around the system problem, the work performed, and how the result was verified.</p>
+            <p>Each case study explains what was broken, what I built, and how I checked the result.</p>
           </div>
           {projects.map((project) => <Project project={project} key={project.id} />)}
         </section>
@@ -287,7 +287,7 @@ export function App() {
           <div className="section-label"><Stack size={18} /><span>Technical stack</span></div>
           <div className="stack-intro">
             <h2 id="stack-title">Broad enough to integrate. Focused enough to debug.</h2>
-            <p>My strongest work sits where code, runtime behavior, operating systems, and users meet.</p>
+            <p>My strongest work sits where code, runtime behavior, Windows/Linux, and real users meet.</p>
           </div>
           <div className="stack-grid">
             {stackGroups.map(({ icon: Icon, label, items }) => (
@@ -329,15 +329,15 @@ export function App() {
             <ShieldCheck size={27} weight="duotone" />
             <p className="eyebrow">Working style</p>
             <h2>Evidence-led and safety-minded</h2>
-            <p>I avoid declaring a system healthy from surface indicators alone. I trace the actual artifact, state transition, or runtime proof.</p>
+            <p>I do not call something healthy just because it says connected. I check the actual log, state change, run output, or proof file.</p>
           </div>
         </section>
 
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
           <div>
             <p className="eyebrow">Let’s connect</p>
-            <h2 id="contact-title">Building reliable systems that teams can trust.</h2>
-            <p>Open to opportunities in application support, systems integration, production reliability, Python/C# engineering, DevOps, fintech, logistics technology, and automation.</p>
+            <h2 id="contact-title">Building reliable tools that teams can trust.</h2>
+            <p>Open to opportunities in application support, operations technology, production support, Python/C# work, DevOps, logistics technology, and automation.</p>
           </div>
           <div className="contact-actions">
             <a className="button primary" href={`mailto:${EMAIL}`}><EnvelopeSimple size={19} weight="bold" /> Email Jonathan</a>

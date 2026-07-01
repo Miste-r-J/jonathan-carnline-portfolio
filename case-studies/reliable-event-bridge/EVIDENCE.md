@@ -17,21 +17,20 @@ The included verification suite exercises each public contract independently. Th
 
 ## What was inspected privately
 
-The case study was prepared after reviewing the active Python runtime, deployed C# integration surface, launch contract, and focused regression tests. The review confirmed that the private system implements the categories of behavior demonstrated here.
+The case study was prepared after reviewing the active Python runtime, deployed C# integration surface, launch contract, and focused regression tests. The review confirmed that the private project uses the reliability behavior demonstrated here.
 
-No private source file, production artifact, model, configuration, or event record was copied into this repository.
+No private source file, production artifact, private research, configuration, or event record was copied into this repository.
 
 ## What is deliberately excluded
 
 - signal, prediction, ranking, or decision research;
-- model features, weights, thresholds, training data, or evaluation results;
+- private features, thresholds, training data, or evaluation results;
 - instruments, account identifiers, financial performance, and risk parameters;
 - broker-specific implementation details;
 - production endpoints, hostnames, credentials, keys, and environment values;
 - operational launch configuration; and
-- enough domain logic to recreate the private system.
+- enough domain logic to recreate the private project.
 
 ## Scope statement
 
-This is engineering evidence, not a claim about investment performance and not a release of a production trading system. The public implementation uses generic commands such as `APPLY_CHANGE` and `APPLY_CONFIGURATION` so the reliability contracts can be evaluated without exposing the private domain.
-
+This is engineering evidence, not a claim about investment performance and not a release of a production trading project. The public implementation uses generic commands such as `APPLY_CHANGE` and `APPLY_CONFIGURATION` so the reliability checks can be evaluated without exposing the private domain.

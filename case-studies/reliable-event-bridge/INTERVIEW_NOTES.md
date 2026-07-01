@@ -2,9 +2,9 @@
 
 ## 90-second version
 
-I worked on a private event-driven system where a Python runtime and a C# platform adapter had to agree about connection state, commands, acknowledgements, and recovered external state. A transport could appear connected while the actual command lifecycle was incomplete, so I treated readiness, admission, execution, and terminal evidence as separate contracts.
+I worked on a private event-driven project where a Python runtime and a C# platform adapter had to agree about connection state, commands, acknowledgements, and recovered external state. A transport could appear connected while the actual command lifecycle was incomplete, so I treated readiness, admission, execution, and terminal evidence as separate checks.
 
-The reliability work centered on durable command IDs, fail-closed correlation, generation-aware reconnect handling, bounded queues, stale-state detection, explicit stop controls, and structured event ledgers. This public repository recreates those engineering patterns with generic commands, synthetic data, and automated tests. It demonstrates the design without releasing the private strategy, models, configurations, or production integration.
+The reliability work centered on command IDs, fail-closed correlation, reconnect handling, bounded queues, stale-state detection, explicit stop controls, and structured event ledgers. This public repository recreates those patterns with generic commands, synthetic data, and automated tests. It demonstrates the design without releasing the private strategy, research, configuration, or production integration.
 
 ## Questions this project can answer
 
@@ -18,5 +18,4 @@ The reliability work centered on durable command IDs, fail-closed correlation, g
 
 ## Honest boundary
 
-Describe the reliability requirements, debugging process, validation, and operating decisions you can personally explain. Do not claim that this demonstration is the full private system or disclose private model and strategy details.
-
+Describe the reliability requirements, debugging process, validation, and operating decisions you can personally explain. Do not claim that this demonstration is the full private project or disclose private strategy details.

@@ -1,10 +1,10 @@
 # Reliable Event Bridge
 
-An original, sanitized reference implementation of the reliability patterns behind a private Python/C# event-driven integration.
+An original, cleaned-up reference implementation of the reliability patterns behind a private Python/C# integration.
 
 The project demonstrates how to keep a cross-system command path observable and fail closed when connections reset, requests replay, queues fill, receipts cannot be correlated, or external state must be recovered.
 
-> This is a portfolio case study, not production source. It contains no strategy logic, model research, credentials, account data, production configuration, or private event records.
+> This is a portfolio case study, not production source. It contains no strategy logic, private research, credentials, account data, production configuration, or private event records.
 
 ## Why this exists
 
@@ -92,8 +92,8 @@ When capacity is exhausted, the bridge rejects new work and marks itself degrade
 
 ## Publication boundary
 
-The private system was reviewed only to identify architecture-level engineering patterns. The public code was written independently for this case study. See [EVIDENCE.md](EVIDENCE.md) and [SECURITY.md](SECURITY.md) for the exact disclosure boundary.
+The private project was reviewed only to identify the reliability patterns I could safely explain in public. The public code was written separately for this case study. See [EVIDENCE.md](EVIDENCE.md) and [SECURITY.md](SECURITY.md) for the disclosure boundary.
 
 ## Author
 
-Jonathan Carnline — systems, automation, integration, and production reliability.
+Jonathan Carnline — operations, automation, integration, and production reliability.
