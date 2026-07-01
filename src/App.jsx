@@ -24,6 +24,7 @@ import taskboardDiagram from "./assets/discord-taskboard.png";
 import bridgeDiagram from "./assets/windows-linux-bridge.png";
 
 const EMAIL = "CarnlineJonathan@gmail.com";
+const assetPath = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 
 const projects = [
   {
@@ -49,7 +50,7 @@ const projects = [
       summary:
         "A runnable Python example shows the reliability patterns without exposing the private trading logic.",
       facts: ["11 passing tests", "Python 3.11-3.13 test workflow", "No production strategy or private research"],
-      download: "/reliable-event-bridge.zip",
+      download: assetPath("reliable-event-bridge.zip"),
     },
   },
   {
@@ -145,7 +146,7 @@ function Header() {
         <a href="#stack" onClick={close}>Stack</a>
         <a href="#about" onClick={close}>About</a>
         <a href="#contact" onClick={close}>Contact</a>
-        <a className="resume-link" href="/Jonathan_Carnline_Technical_Resume.pdf" download onClick={close}>
+        <a className="resume-link" href={assetPath("Jonathan_Carnline_Technical_Resume.pdf")} download onClick={close}>
           Download résumé <DownloadSimple size={17} weight="bold" />
         </a>
       </nav>
@@ -250,7 +251,7 @@ export function App() {
             </p>
             <div className="hero-actions">
               <a className="button primary" href="#work">Read the work <ArrowRight size={18} weight="bold" /></a>
-              <a className="button secondary" href="/Jonathan_Carnline_Technical_Resume.pdf" download>
+              <a className="button secondary" href={assetPath("Jonathan_Carnline_Technical_Resume.pdf")} download>
                 Download résumé <DownloadSimple size={18} weight="bold" />
               </a>
             </div>
