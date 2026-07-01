@@ -1,0 +1,46 @@
+name: Trading runtime checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  runtime-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: projects/reliable-trading-runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Verify test collection
+        working-directory: projects/reliable-trading-runtime
+        env:
+          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime:${{ github.workspace }}/projects/reliable-trading-runtime/simplified
+        run: python -m pytest simplified/na/tests --collect-only -q
+
+      - name: Run stable runtime checks
+        working-directory: projects/reliable-trading-runtime
+        env:
+          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime:${{ github.workspace }}/projects/reliable-trading-runtime/simplified
+        run: |
+          python -m pytest \
+            simplified/na/tests/test_nt_bridge.py \
+            simplified/na/tests/test_config_no_duplicate_keys.py \
+            simplified/na/tests/test_prop_guardrails_integration.py \
+            simplified/na/tests/test_bracket_sign_validator.py \
+            simplified/na/tests/test_prediction_determinism.py \
+            simplified/na/tests/test_triple_barrier_labels.py \
+            simplified/na/tests/test_automation_runtime.py -q
+

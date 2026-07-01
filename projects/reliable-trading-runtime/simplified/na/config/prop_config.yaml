@@ -1,0 +1,157 @@
+# Prop Account Configuration
+# For use with funded trading accounts
+# Generated based on analysis of 5.23.26 session issues
+
+# ============================================================
+# RISK LIMITS - Prop Account Requirements
+# ============================================================
+risk:
+ # Daily loss limits
+ max_daily_loss: 1000.0 # $600 max daily loss (HARD LIMIT)
+ daily_loss_warning: 600.0 # Warning at $600
+ 
+ # Drawdown limits
+ max_drawdown: 2000.0 # $2000 max account drawdown (HARD LIMIT)
+ drawdown_warning: 1500.0 # Warning at $1500
+ 
+ # Trade limits
+ max_trades_per_day: 10 # Maximum trades per day
+ max_consecutive_losses: 2 # Stop after 2 consecutive losses
+ 
+ # Position limits
+ max_contracts: 2 # Maximum contracts per trade
+ max_risk_per_trade: 800.0 # $600 max risk per trade
+ 
+ # Session timing
+ allowed_start_time: "00:00"
+ allowed_end_time: "23:59"
+ no_trade_before: "00:00"
+ no_trade_after: "23:59"
+ 
+
+
+# ============================================================
+# VOLATILITY PROTECTION - Crash Detection
+# ============================================================
+volatility:
+ # ATR spike detection
+ atr_spike_multiplier: 2.0 # Block if ATR > 2x average
+ atr_lookback_bars: 20 # Lookback period for ATR average
+ 
+ # Price velocity detection (CRASH DETECTION)
+ price_velocity_threshold: 5.0 # Points per minute threshold
+ velocity_lookback_bars: 5 # Bars to check for velocity
+ 
+ # Volatility regime thresholds
+ high_vol_regime_atr_mult: 1.5 # Reduce trading above this
+ extreme_vol_regime_atr_mult: 2.5 # Block all trading above this
+ 
+ # Signal validation
+ max_signal_age_sec: 180.0 # Reject signals older than 3 minutes (tolerates slow live bar processing without changing other freshness gates)
+ max_slippage_points: 2.0 # 8 ES ticks (0.25/tick): tighter base cap; live executor also applies volatility-aware lockout
+
+# ============================================================
+# GUARDRAILS - Execution Protection
+# ============================================================
+guardrails:
+ # Price freshness
+ price_age_max_sec: 10.0
+ bar_age_max_sec: 90.0
+ snapshot_age_max_sec: 60.0
+ 
+ # Fill validation
+ fill_slippage_max: 2.0 # Keep aligned with max_slippage_points
+ signal_validation_enabled: true
+ volatility_check_enabled: true
+ 
+ # Protection timeouts
+ protection_timeout_sec: 5.0
+ close_emit_timeout_sec: 30.0
+ max_exit_pending_sec: 15.0
+
+# ============================================================
+# PRESET - Prop Account Conservative
+# ============================================================
+preset:
+ id: "es_prop_conservative"
+ instrument: "ES"
+ 
+ # Signal thresholds (higher for prop)
+ prob_threshold: 0.72 # Higher than default (0.70)
+ confident_threshold: 0.80 # Confident signal threshold
+ hold_confidence_min: 0.70 # Minimum confidence to hold
+ 
+ # Stop/target (in ticks, 4 ticks = 1 point)
+ stop_ticks: 32 # 8 points stop
+ target_ticks: 32 # 8 points target (1:1 R:R)
+ 
+ # Position sizing
+ default_contracts: 1
+ max_contracts: 2
+ 
+ # Risk adjustments
+ reduce_on_high_vol: true # Reduce size in high volatility
+ reduce_on_consecutive_loss: true # Reduce size after losses
+ 
+ # ATR-based stops
+ atr_stops:
+ k_stop: 1.0
+ k_t1: 0.8
+ k_trail: 0.55
+ min_rr: 1.35
+
+# ============================================================
+# MODEL SETTINGS
+# ============================================================
+model:
+ # Feature flags
+ use_volatility_filter: true
+ use_risk_manager: true
+ use_execution_validation: true
+ 
+ # Regime detection
+ regime_detection_enabled: true
+ crash_detection_enabled: true
+ 
+ # Probability calibration
+ min_prob_for_long: 0.72
+ min_prob_for_short: 0.72
+ confident_long_override: 0.78
+ confident_short_override: 0.78
+
+# ============================================================
+# LOGGING
+# ============================================================
+logging:
+ # Risk state logging
+ log_risk_state_interval_sec: 60
+ log_volatility_state_interval_sec: 60
+ 
+ # Trade logging
+ log_signal_generation: true
+ log_execution_decision: true
+ log_fill_validation: true
+ 
+ # Alert thresholds
+ alert_on_daily_loss_warning: true
+ alert_on_consecutive_losses: true
+ alert_on_volatility_spike: true
+ alert_on_crash_detected: true
+
+# ============================================================
+# EMERGENCY SETTINGS
+# ============================================================
+emergency:
+ # Auto-flatten on breach
+ flatten_on_daily_loss_breach: true
+ flatten_on_drawdown_breach: true
+ flatten_on_volatility_extreme: true
+ 
+ # Kill switch
+ kill_switch_enabled: true
+ kill_switch_reasons:
+ - daily_loss_breach
+ - drawdown_breach
+ - volatility_extreme
+ - consecutive_loss_limit
+ - manual_trigger

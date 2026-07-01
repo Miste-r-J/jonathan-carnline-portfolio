@@ -1,0 +1,25 @@
+{
+  "profiles": {
+    "prop_2k": {
+      "instrument": "MES",
+      "tz": "America/Denver",
+      "loss_limits": {
+        "max_dollar_loss": 2000,
+        "max_R_per_day": -4,
+        "max_losses_per_day": 4,
+        "max_trades_per_day": 6,
+        "size_after_first_loss_mult": 0.5
+      },
+      "session": {
+        "rth_start": "07:30",
+        "rth_end": "12:00"
+      },
+      "anti_overtrade": {
+        "same_dir_dedupe_min": 15
+      },
+      "confirmations": {
+        "min_signal_bars": 4
+      }
+    }
+  }
+}

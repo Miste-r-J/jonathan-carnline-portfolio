@@ -10,6 +10,7 @@ import {
   EnvelopeSimple,
   FileCode,
   GraduationCap,
+  GithubLogo,
   List,
   LinkedinLogo,
   ShieldCheck,
@@ -20,115 +21,36 @@ import {
 
 import heroDiagram from "./assets/hero-systems-architecture.png";
 import reliabilityDiagram from "./assets/realtime-reliability.png";
-import taskboardDiagram from "./assets/discord-taskboard.png";
-import bridgeDiagram from "./assets/windows-linux-bridge.png";
 
 const EMAIL = "CarnlineJonathan@gmail.com";
+const SOURCE_URL = "https://github.com/Miste-r-J/jonathan-carnline-portfolio/tree/main/projects/reliable-trading-runtime";
 const assetPath = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 
 const projects = [
   {
     number: "01",
     id: "reliability",
-    title: "Real-Time Trading Reliability",
-    subtitle: "Python runtime + C# NinjaTrader integration",
+    title: "Reliable Trading Runtime",
+    subtitle: "The real Python, C#, PowerShell, test, and operations source",
     image: reliabilityDiagram,
     problem:
-      "A live execution path could look healthy on the surface while signals, safety checks, bridge state, and actual fills did not agree.",
+      "I needed to know what the software actually did when market data, model decisions, safety rules, the order bridge, and broker state did not agree.",
     work:
-      "Built and operated a Python/C# runtime with live, paper, replay, and backfill workflows. I tightened the order IDs, reconnect behavior, stale-data checks, protection checks, and kill-switch controls.",
+      "I built a complete runtime for training, backtesting, replay, paper, and live operation. It calculates features, evaluates models, governs decisions, sends canonical order intents through a C# NinjaTrader bridge, reconciles fills and positions, and records the full evidence chain.",
     verification:
-      "Kept a clear evidence trail across signals, gates, order decisions, orders, fills, positions, health summaries, and PnL so I could trace the real failure point.",
-    stack: ["Python", "C#", "PowerShell", "pandas", "JSONL / CSV", "NinjaTrader 8"],
+      "I backed it with 76 test modules plus replay, parity, audit, and diagnostic tools. Signals, gates, intents, acknowledgements, fills, positions, protection state, health, and PnL remain separate and traceable.",
+    stack: ["Python", "C#", "PowerShell", "pandas", "scikit-learn", "pytest", "NinjaTrader 8"],
     notes: [
-      "Separated readiness, intent, acknowledgement, and fill evidence instead of treating a connected bridge as proof of execution.",
-      "Used permanent order IDs and conservative recovery rules to reduce duplicate or ghost-order risk.",
-      "Kept the public version high-level; account details, strategies, credentials, and private research are not included.",
+      "I separate prediction, permission, intent, acknowledgement, and fill so one status cannot hide where a failure occurred.",
+      "I use stable correlation IDs, deduplication, append-only ledgers, atomic writes, broker snapshots, and conservative recovery rules.",
+      "The repository contains the real implementation and tests. Only credentials, account data, raw logs, datasets, binaries, and generated artifacts are excluded.",
     ],
     proof: {
-      title: "Sanitized reliability proof",
+      title: "Review the actual source",
       summary:
-        "A runnable Python example shows the reliability patterns without exposing the private trading logic.",
-      facts: ["11 passing tests", "Python 3.11-3.13 test workflow", "No production strategy or private research"],
-      download: assetPath("reliable-event-bridge.zip"),
-    },
-  },
-  {
-    number: "02",
-    id: "execution-safety",
-    title: "Execution Safety System",
-    subtitle: "Fail-closed runtime checks for live operations",
-    image: reliabilityDiagram,
-    problem:
-      "The runtime needed to separate real execution truth from surface-level status so bad state could not quietly turn into a bad action.",
-    work:
-      "Built guardrails around stale snapshots, late fills, duplicate events, protection checks, lockouts, live-feed freshness, and status reporting.",
-    verification:
-      "Backed the work with regression tests around reconciliation, stale data, feed liveness, PnL truth, protection state, and lockout behavior.",
-    stack: ["Python", "pytest", "JSONL", "CSV", "State machines", "Incident response"],
-    notes: [
-      "Treated signal, gate, acknowledgement, fill, snapshot, and ledger state as separate evidence.",
-      "Blocked new action when the system could not prove the live path was safe.",
-      "Published only the engineering pattern; production strategy logic and raw run data stayed private.",
-    ],
-    proof: {
-      title: "Bot runtime proof package",
-      summary:
-        "Five public-safe notes pulled from the private bot repo audit: safety, bridge, ingestion, feed observability, and task tracking.",
-      facts: ["Selected from local bot repo audit", "No account IDs or private logs", "Recruiter-readable proof folders"],
-      download: assetPath("bot-runtime-proof.zip"),
-    },
-  },
-  {
-    number: "03",
-    id: "taskboard",
-    title: "Discord Operations Taskboard",
-    subtitle: "Keeping work organized across long-running tasks",
-    image: taskboardDiagram,
-    problem:
-      "Long-running Discord work needed a way to keep tasks, owners, approvals, notes, and status from getting lost between sessions.",
-    work:
-      "Built a taskboard-style workflow that tracked the original request, parent/child work, worker role, report channel, approval status, and waiting state.",
-    verification:
-      "Tested the flow around startup repair, stale task state, waiting work, and handoffs so the current state could be checked instead of guessed.",
-    stack: ["Python", "Discord", "SQLite", "JSON", "Task tracking", "Runbooks"],
-    notes: [
-      "Kept the source task, parent task, report channel, and worker role attached to the work.",
-      "Moved approval-gated work into task state instead of leaving it buried in chat history.",
-      "Required task-state evidence before calling broad cleanup work finished.",
-    ],
-    proof: {
-      title: "Public taskboard notes",
-      summary:
-        "A safe writeup of the task-state pattern, handoff fields, approval state, and evidence-first completion rules.",
-      facts: ["Task lineage", "Approval/waiting states", "Startup repair checks"],
-      download: assetPath("bot-runtime-proof.zip"),
-    },
-  },
-  {
-    number: "04",
-    id: "bridge",
-    title: "Windows-to-Linux Operations Bridge",
-    subtitle: "Local execution, controlled cloud visibility",
-    image: bridgeDiagram,
-    problem:
-      "Selected local runtime outputs needed to reach a cloud server without moving private execution off the Windows machine.",
-    work:
-      "Automated an allowlisted SSH/SFTP push path with PowerShell scheduled tasks, heartbeat files, a Python watcher, and a Linux systemd service.",
-    verification:
-      "Validated the scheduled transfer path and cloud-side watcher while accounting for PowerShell 5 compatibility and cross-platform UTF-8/JSON behavior.",
-    stack: ["PowerShell", "Python", "SSH / SFTP", "Linux", "systemd", "DigitalOcean"],
-    notes: [
-      "Transferred only an explicit allowlist of files and kept private execution local.",
-      "Used heartbeat/state files so availability was observable rather than assumed.",
-      "Staged reverse access behind Windows SSH-server readiness instead of opening an incomplete path.",
-    ],
-    proof: {
-      title: "Bridge and ingestion notes",
-      summary:
-        "Safe notes from the bot audit covering protocol shape, queue behavior, audit-bundle ingestion, and status evidence.",
-      facts: ["Python/C# bridge", "Source hashing", "Structured run evidence"],
-      download: assetPath("bot-runtime-proof.zip"),
+        "I explain the design in first person, provide a file-by-file starting point, and publish the source instead of a marketing example.",
+      facts: ["256 Python files", "About 117,000 lines", "76 test modules", "Python/C#/PowerShell"],
+      download: SOURCE_URL,
     },
   },
 ];
@@ -198,7 +120,7 @@ function Project({ project }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <article className="case-study" id={project.id}>
+    <article className="project-detail" id={project.id}>
       <div className="case-copy">
         <div className="case-title-row">
           <span className="case-number">{project.number}</span>
@@ -225,7 +147,7 @@ function Project({ project }) {
               </div>
             </div>
             <ul>{project.proof.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>
-            <a href={project.proof.download} download>Download reviewable source <DownloadSimple size={16} weight="bold" /></a>
+            <a href={project.proof.download} target="_blank" rel="noreferrer">Open source on GitHub <GithubLogo size={16} weight="bold" /></a>
           </aside>
         )}
         <button className="text-button" onClick={() => setExpanded((value) => !value)} aria-expanded={expanded}>
@@ -318,8 +240,8 @@ export function App() {
         <section className="work-section" id="work" aria-labelledby="work-title">
           <div className="section-heading">
             <p className="eyebrow">Selected engineering work</p>
-            <h2 id="work-title">Proof before polish.</h2>
-            <p>Each case study explains what was broken, what I built, and how I checked the result.</p>
+            <h2 id="work-title">The system I built.</h2>
+            <p>This is the actual source, how I built it, what I owned, and how I verified the difficult parts.</p>
           </div>
           {projects.map((project) => <Project project={project} key={project.id} />)}
         </section>

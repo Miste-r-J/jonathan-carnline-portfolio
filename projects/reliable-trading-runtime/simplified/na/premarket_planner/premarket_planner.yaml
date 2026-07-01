@@ -1,0 +1,37 @@
+enabled: true
+instrument: ES
+session_tz: America/Denver
+rth_start: "06:30"
+rth_end: "12:59"
+emit_time_local: "06:30"
+display_timezone: America/Denver
+dispatch_interval_minutes: 5
+discord_token_env: AUTOMATION_DISCORD_TOKEN
+news_csv_path: ""
+news_source_tz: America/Denver
+news_blackout_before_min: 5
+news_blackout_after_min: 5
+
+data:
+  csv_path: data/intraday/es/es.csv
+  csv_timezone: America/Denver
+
+windows:
+  eth_start_hour: 13
+  eth_end_hour: 7
+  eth_end_minute: 29
+  min_eth_bars: 30
+  last_hours_fallback: 8
+
+metrics:
+  atr_len: 14
+  atr_timeframe: "5m"
+  compute_rth_vwap: true
+
+output:
+  discord_webhook: ""
+  round_decimals: 2
+
+backfill:
+  enabled: true
+  hours: 24

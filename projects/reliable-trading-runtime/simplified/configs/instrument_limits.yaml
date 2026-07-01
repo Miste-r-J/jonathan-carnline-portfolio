@@ -1,0 +1,13 @@
+instruments:
+  ES:
+    min_stop_ticks: 6
+    max_stop_points: 25
+    max_target_points: 75
+    max_r_multiple: 3
+    base_risk_usd: 600
+  MES:
+    min_stop_ticks: 6
+    max_stop_points: 35
+    max_target_points: 90
+    max_r_multiple: 3
+    base_risk_usd: 90

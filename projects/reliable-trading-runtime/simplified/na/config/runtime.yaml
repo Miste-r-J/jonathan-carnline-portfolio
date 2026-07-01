@@ -1,0 +1,51 @@
+runtime:
+  risk:
+    daily_loss_limit: 300.0
+    max_intraday_dd: 250.0
+    per_instrument_risk:
+      ES: 500.0
+      MES: 100.0
+      NQ: 650.0
+      MNQ: 130.0
+  session:
+    tz: America/Chicago
+    rth_start: "07:30"
+    rth_end: "14:00"
+  router:
+    hmac_secret_env: STREAM_DEMO_SECRET
+    min_prob: 0.55
+    instrument_whitelist: ["ES", "MES", "NQ", "MNQ"]
+  labels:
+    trend_ma_window: 200
+    trend_slope_window: 20
+    horizon_bars: 12
+    domain: ternary
+    drop_flats: false
+  features:
+    # WARNING: flow_ohlcv.enabled MUST be true when using models trained with
+    # flow features (production Phase2 model as of retrain_v2_full).
+    # Setting enabled: false will raise ConfigurationError at startup.
+    flow_ohlcv:
+      enabled: true
+  journal:
+    backend_url:
+    auth_header: X-JOURNAL-TOKEN
+    auth_token_env:
+    enable_http: false
+  evolution:
+    sim_thresholds:
+      min_trades: 40
+      min_pnl: 0.0
+      max_drawdown: -1500.0
+      min_winrate: 0.48
+    live_thresholds:
+      min_trades: 60
+      min_pnl: 2000.0
+      max_drawdown: -2000.0
+      min_winrate: 0.5
+  risk_profiles:
+    topstep_50k:
+      max_drawdown: -2000.0
+      profit_target: 3000.0
+      lockout_on_violation: true
+      max_trades: 5

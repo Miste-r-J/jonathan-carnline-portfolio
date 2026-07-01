@@ -1,63 +1,41 @@
-# Jonathan Carnline — Portfolio
+# Jonathan Carnline — Engineering Portfolio
 
-Portfolio for operations technology, automation, application support, production support, Python/C# work, logistics technology, and reliability roles.
+This repository contains my portfolio site and the real source for my reliable trading runtime.
 
-## What this repo contains
+## Start here
 
-- `src/` — React/Vite portfolio site.
-- `case-studies/reliable-event-bridge/` — cleaned reliability case study with runnable tests.
-- `case-studies/bot-runtime-proof/` — recruiter-safe proof package selected from the private bot repo.
-- `public/reliable-event-bridge.zip` — downloadable copy of the case study.
-- `public/bot-runtime-proof.zip` — downloadable copy of the bot-runtime proof package.
-- `public/Jonathan_Carnline_Technical_Resume.pdf` — resume download.
+- [`projects/reliable-trading-runtime/README.md`](projects/reliable-trading-runtime/README.md) — what I built and why.
+- [`projects/reliable-trading-runtime/docs/HOW_IT_WORKS.md`](projects/reliable-trading-runtime/docs/HOW_IT_WORKS.md) — end-to-end runtime walkthrough.
+- [`projects/reliable-trading-runtime/docs/WHAT_I_OWNED.md`](projects/reliable-trading-runtime/docs/WHAT_I_OWNED.md) — the work I personally did and the engineering decisions I made.
+- [`projects/reliable-trading-runtime/simplified/na/discord_addons/cli/stream_live_csv.py`](projects/reliable-trading-runtime/simplified/na/discord_addons/cli/stream_live_csv.py) — the main operating runtime.
+- [`projects/reliable-trading-runtime/simplified/na/tests/`](projects/reliable-trading-runtime/simplified/na/tests) — execution, reliability, replay, data, and model-contract tests.
 
-## What this repo intentionally excludes
+## Portfolio site
 
-- Production trading strategies, private research, credentials, account identifiers, private logs, private screenshots, and private configuration.
-- Generated dependency folders such as `node_modules/`.
-- Local cache/build output; GitHub Pages builds the site from source.
-
-## Local development
+The site is built with React and Vite.
 
 ```powershell
 pnpm install
 pnpm dev
 ```
 
-Open `http://127.0.0.1:5173`.
-
-## Production build
+Production build:
 
 ```powershell
 pnpm build
 ```
 
-The deployable static output is written to `dist/`.
+## Repository layout
 
-## GitHub Pages deployment
+```text
+src/                                portfolio website
+public/                             downloadable resume
+projects/reliable-trading-runtime/  actual engineering project source
+.github/workflows/                  site deployment and project checks
+```
 
-This repo includes `.github/workflows/pages.yml`. After pushing to a GitHub repository:
+## Public-repository boundary
 
-1. Open the repository on GitHub.
-2. Go to **Settings → Pages**.
-3. Set **Source** to **GitHub Actions**.
-4. Push to `main` or run the workflow manually.
+The source, tests, configuration structure, and technical explanations are public. Credentials, account identifiers, webhook URLs, private keys, raw logs, datasets, trained model binaries, generated runs, and machine-specific secrets are excluded.
 
-## Content rules
-
-- Independent technical projects are labeled separately from paid professional experience.
-- Education is stated as coursework with 30 semester credits completed.
-- Trading credentials, account identifiers, strategies, private infrastructure details, and private research logic are excluded.
-- Project claims must remain traceable to the career evidence inventory in the parent resume workspace.
-
-## Bot repo proof packages
-
-The public proof package is split into individual folders:
-
-- execution safety;
-- NinjaTrader bridge integration;
-- audit bundle ingestion;
-- feed observability;
-- Discord operations taskboard.
-
-These came from a local audit of `C:\Users\miste\Documents\bot`, but only safe summaries and implementation patterns were published.
+The technical project is independent work. My paid operations experience is listed separately on the portfolio and resume.
