@@ -5,10 +5,8 @@ This repository contains my portfolio site and the real source for my reliable t
 ## Start here
 
 - [`projects/reliable-trading-runtime/README.md`](projects/reliable-trading-runtime/README.md) — what I built and why.
-- [`projects/reliable-trading-runtime/docs/HOW_IT_WORKS.md`](projects/reliable-trading-runtime/docs/HOW_IT_WORKS.md) — end-to-end runtime walkthrough.
-- [`projects/reliable-trading-runtime/docs/WHAT_I_OWNED.md`](projects/reliable-trading-runtime/docs/WHAT_I_OWNED.md) — the work I personally did and the engineering decisions I made.
-- [`projects/reliable-trading-runtime/simplified/na/discord_addons/cli/stream_live_csv.py`](projects/reliable-trading-runtime/simplified/na/discord_addons/cli/stream_live_csv.py) — the main operating runtime.
-- [`projects/reliable-trading-runtime/simplified/na/tests/`](projects/reliable-trading-runtime/simplified/na/tests) — execution, reliability, replay, data, and model-contract tests.
+- [`projects/reliable-trading-runtime/trading_system/runtime_engine/integrations/cli/stream_live_csv.py`](projects/reliable-trading-runtime/trading_system/runtime_engine/integrations/cli/stream_live_csv.py) — the main operating runtime.
+- [`projects/reliable-trading-runtime/trading_system/runtime_engine/tests/`](projects/reliable-trading-runtime/trading_system/runtime_engine/tests) — execution, reliability, replay, data, and model-contract tests.
 
 ## Portfolio site
 

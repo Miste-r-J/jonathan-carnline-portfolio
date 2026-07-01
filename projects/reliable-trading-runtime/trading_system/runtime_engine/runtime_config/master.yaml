@@ -1,0 +1,1492 @@
+# ===================================================================
+# ES MASTER PRESETS — Cleaned for Pro/Elite Launch
+# ===================================================================
+
+instruments:
+  ES:
+    point_value: 50
+    tick_size: 0.25
+    round_lot: 1
+
+risk_presets:
+
+  # ==========================================================
+  # 🏆 ELITE TIER — Maximum quality
+  # Model: retrain_v6_fixed_v2_hyper_016
+  # Backtest: $102k VAL PnL | $1,900 DD | 77% WR | 5.26 PF
+  # Profile: Highest confidence trades, minimum noise
+  # ==========================================================
+  es_elite_v1:
+    description: "ELITE — retrain_v6_fixed_v2_hyper_016 | balanced high-quality flow"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016
+    phase2_close_enabled: false
+    close_model_path: artifacts/phase2/candidates/retrain_v6_fixed_v2_hyper_016_open30_liveprep_v1/close.joblib
+    phase2_close_threshold: 0.90
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: true
+    gate_mode: prob_and_one
+    allowed_grades: ["A", "B"]
+    max_trades_per_session: 10
+    p_buy: 0.50
+    p_sell: 0.50
+    p_setup: 0.27  # restored to backfill-matched value for signal quality
+    p_long: 0.70
+    p_short: 0.68
+    min_hold_bars: 1
+    # Execution-level grade gate (A+/B+/C taxonomy, see _grade()). Only A+ signals reach
+    # the order executor — blocks B+/C dilution. The audited A+ subset is the profitable one.
+    min_execute_grade: "A+"
+    max_hold_bars: 24
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 400
+      max_risk_per_trade_usd: 150
+      cooldown_after_loss: 15
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.70
+      min_p_short: 0.68
+      p_setup: 0.27
+
+    exit_prob_confirm_bars: 5
+    persist_prob_bars: 20
+    # TUNED: shelf-like protection — clamp winner giveback sooner
+    max_r_giveback: 0.9
+    # TUNED: scale up to 2 contracts on high-conviction A+ signals (auto_contracts uses prob)
+    max_position_contracts: 2
+    auto_contracts: true
+    max_trades_per_day: 10
+    # Per-trade risk cap set for live consistency and drawdown control.
+    # Other controls stay active: max_daily_loss, max_losses_per_day,
+    # max_position_contracts, cooldown_after_loss, and streak limits.
+    instrument_risk_overrides: {max_stop_points: 8}
+    # These top-level values intentionally override the risk: block above
+    # (top-level wins in the registry fallback-merge): resolved max_daily_loss=500.
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 300
+    # Live lockout controls (fail-closed recovery profile)
+    max_slippage_points: 6.0
+    open_slippage_cooldown_bars: 6
+    loss_cascade_consecutive_threshold: 2
+    loss_cascade_cooldown_bars: 3
+    loss_cascade_side_lockout_bars: 6
+    # Suppress weak long windows observed in loss clusters; retune before re-enabling.
+
+    # TUNED: longer cooldown after loss — prevents revenge trading, forces patience
+    cooldown_after_loss: 30
+    loss_streak_limit: 2
+    # FIX-2 (2026-03-09): Belt-and-suspenders — also enforce max_losses in preset so
+    # it is active even without the --max_losses_per_day CLI flag.
+    max_losses_per_day: 3
+    phase2_use_manifest_thresholds: true
+    # Parity hardening (2026-04-02):
+    # Enable override bypass when position_state is KNOWN (not UNTRACKED)
+    override_prob_min: 1.0
+    override_hold_conf_min: 1.0
+    phase2_force_open_on_gate_pass: true
+    phase2_force_open_min_setup: 0.06
+    phase2_force_open_min_entry_conf: 0.10
+    phase2_force_open_live_only: false
+    allow_countertrend_in_unresolved: true
+    trend_bias_guard_enabled: false
+    allow_countertrend_fade_in_trend: false
+    # Keep full bracket protection for closer backfill/live behavior.
+    # Runner mode below suppresses the attached fixed target while preserving the protective stop.
+    protection_mode: stop_and_target
+    publish_min_grade: "B+"
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 2.0
+    pnl_giveback_close_r: 0.75
+    pnl_stall_bars: 6
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.15
+    pnl_severe_adverse_r: 0.90
+    pnl_target_arm_min_hold_bars: 5
+    pnl_target_arm_min_unrealized_r: 1.0
+    pnl_runner_enabled: true
+    pnl_runner_arm_r: 2.25
+    pnl_runner_hard_exit_r: 2.50
+    pnl_runner_giveback_r: 0.5
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    pnl_shelf_enabled: false
+    pnl_shelf_arm_mode: step_only
+    pnl_shelf_steps_usd: [100, 200, 400, 700, 1000]
+    pnl_shelf_locks_usd: [25, 100, 250, 500, 750]
+    pnl_shelf_min_hold_bars: 1
+    pnl_shelf_exit_mode: hard_floor
+    pnl_shelf_intrabar: true
+    pnl_shelf_rearm_cooldown_sec: 0
+    phase2_close_min_hold_bars: 2
+    phase2_close_min_hold_sec: 60
+    min_signal_bars: 3
+    new_position_grace_sec: 60
+    # FIX (2026-03-11): Scratch re-entry block.
+    # After a trade lasting <= scratch_block_bars_max bars, block same-direction
+    # re-entry for scratch_reentry_cooldown_bars bars (0 = disabled).
+    # Prevents: 08:50 LONG scratch (+$12) -> immediate 09:00 LONG re-entry at higher price.
+    scratch_block_bars_max: 1
+    scratch_reentry_cooldown_bars: 3
+    # FIX (2026-03-12): Simulated bar stop enforcement — cap stop fills at stop price
+    # when using bar High/Low (prevents gap-to-open from overstating losses in sim).
+    sim_bar_stop_enforcement: true
+    # FIX (2026-03-12): Post-stop cooldown — block all entries for N bars after a stop.
+    post_stop_cooldown_bars: 3
+    # min_target_r_multiple removed (2026-03-12): was 1.5 — audit showed this blocked
+    # high-probability entries. Risk is controlled by stop size + daily loss limit instead.
+    # FIX (2026-03-11): VWAP fade override — allow high-conviction reversal entries
+    # when price is significantly extended from VWAP (open spike fades).
+    # vwap_fade_override_pts: minimum VWAP distance to trigger override (0 = disabled).
+    # vwap_fade_prob_threshold: max LONG prob for SHORT override (min LONG prob for LONG override).
+    # Example: SHORT at 6800 when VWAP=6793 (dist=7 >= 5) and prob=0.288 (<= 0.28) -> allowed.
+    vwap_fade_override_pts: 4.5
+    vwap_fade_prob_threshold: 0.50
+    # FIX (2026-03-11): Session extreme proximity guard.
+    # Block LONG within extreme_proximity_pts of session high unless prob exceeds
+    # p_buy + extreme_proximity_prob_boost. Block SHORT within pts of session low similarly.
+    # Prevents: 09:00 LONG at 6797.50 (3.25 pts from 6800.75 high) with only prob=0.737.
+    extreme_proximity_pts: 6.0
+    extreme_proximity_prob_boost: 0.05
+    # CRITICAL FIX (2026-05-27): Extended trading window for modelrun62_fixA replication
+    # Backtest achieved $113K over 305 days with all-day trading (00:00-23:59).
+    # Previous 07:00-14:00 restriction limited signal density by ~3x.
+    trade_window_start: "00:00"
+    trade_window_end: "23:59"
+
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      # FIX-5 (2026-03-09): 90s bar age threshold (2x 5-min bar interval + 5s grace = 605s
+      # effective from compute_effective_bar_age_max_sec; 90s here is overridden by the
+      # effective calc but kept conservative so CLI --bar_age_max_sec should NOT be
+      # set to 1200 (too permissive). Remove --bar_age_max_sec 1200 from CLI flags.
+      bar_age_max_sec: 90
+      protection_timeout_sec: 5
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 2
+      cancel_loop_max_updates: 5
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+    allow_replay_exec_to_nt: true
+    replay_execution_intended: true
+    replay_exec_pacing: as_fast_as_possible
+    phase_state:
+      phase_state_machine_enabled: true
+      phase_backfill_lag_sec_threshold: 1500
+      phase_currentness_lag_sec_threshold: 120
+      phase_currentness_confirmations_required: 3
+      readiness_bad_count_to_disarm: 2
+      readiness_good_count_to_rearm: 2
+
+  es_elite_v1_live_ready:
+    description: "ELITE LIVE READY — self-contained close bundle with explicit TOD session"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016_livebundle_v1
+    phase2_close_enabled: true
+    close_model_path: artifacts/phase2/candidates/retrain_v6_fixed_v2_hyper_016_livebundle_v1/close.joblib
+    phase2_close_threshold: 0.90
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: true
+    gate_mode: prob_or_one
+    allowed_grades: ["A", "B"]
+    max_trades_per_session: 10
+    p_buy: 0.57
+    p_sell: 0.43
+    p_setup: 0.06
+    p_long: 0.57
+    p_short: 0.57
+    min_hold_bars: 1
+    min_execute_grade: "A+"
+    max_hold_bars: 24
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 400
+      max_risk_per_trade_usd: 150
+      cooldown_after_loss: 15
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.57
+      min_p_short: 0.57
+      p_setup: 0.06
+    exit_prob_confirm_bars: 5
+    persist_prob_bars: 20
+    max_r_giveback: 0.9
+    max_position_contracts: 2
+    auto_contracts: true
+    max_trades_per_day: 10
+    instrument_risk_overrides: {max_stop_points: 8}
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 300
+    max_slippage_points: 6.0
+    open_slippage_cooldown_bars: 6
+    loss_cascade_consecutive_threshold: 2
+    loss_cascade_cooldown_bars: 3
+    loss_cascade_side_lockout_bars: 6
+    cooldown_after_loss: 30
+    loss_streak_limit: 2
+    max_losses_per_day: 3
+    phase2_use_manifest_thresholds: true
+    override_prob_min: 1.0
+    override_hold_conf_min: 1.0
+    phase2_force_open_on_gate_pass: true
+    phase2_force_open_min_setup: 0.27
+    phase2_force_open_min_entry_conf: 0.10
+    phase2_force_open_live_only: true
+    allow_countertrend_in_unresolved: true
+    trend_bias_guard_enabled: false
+    allow_countertrend_fade_in_trend: true
+    protection_mode: stop_and_target
+    publish_min_grade: "B+"
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 0.60
+    pnl_giveback_close_r: 0.25
+    pnl_stall_bars: 4
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.05
+    pnl_severe_adverse_r: 0.70
+    pnl_target_arm_min_hold_bars: 1
+    pnl_target_arm_min_unrealized_r: 0.20
+    pnl_runner_enabled: true
+    pnl_runner_arm_r: 0.50
+    pnl_runner_hard_exit_r: 2.50
+    pnl_runner_giveback_r: 0.15
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    pnl_shelf_enabled: true
+    pnl_shelf_arm_mode: step_only
+    pnl_shelf_steps_usd: [100, 200, 400, 700, 1000]
+    pnl_shelf_locks_usd: [25, 100, 250, 500, 750]
+    pnl_shelf_min_hold_bars: 1
+    pnl_shelf_exit_mode: hard_floor
+    pnl_shelf_intrabar: true
+    pnl_shelf_rearm_cooldown_sec: 0
+    phase2_close_min_hold_bars: 2
+    phase2_close_min_hold_sec: 60
+    min_signal_bars: 3
+    new_position_grace_sec: 60
+    scratch_block_bars_max: 1
+    scratch_reentry_cooldown_bars: 3
+    sim_bar_stop_enforcement: true
+    post_stop_cooldown_bars: 3
+    vwap_fade_override_pts: 4.5
+    vwap_fade_prob_threshold: 0.50
+    extreme_proximity_pts: 6.0
+    extreme_proximity_prob_boost: 0.05
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      bar_age_max_sec: 90
+      protection_timeout_sec: 5
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 2
+      cancel_loop_max_updates: 5
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+    allow_replay_exec_to_nt: true
+    replay_execution_intended: true
+    replay_exec_pacing: as_fast_as_possible
+    phase_state:
+      phase_state_machine_enabled: true
+      phase_backfill_lag_sec_threshold: 1500
+      phase_currentness_lag_sec_threshold: 120
+      phase_currentness_confirmations_required: 3
+      readiness_bad_count_to_disarm: 2
+      readiness_good_count_to_rearm: 2
+
+  es_elite_v1_live_ready_24h_test:
+    description: "ELITE LIVE READY 24H TEST — modelrun77-aligned live preset with the same phase2 policy shape"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016_livebundle_v1
+    phase2_close_enabled: false
+    close_model_path: artifacts\es_xgb_close_5m.joblib
+    phase2_close_threshold: 0.85
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: true
+    gate_mode: prob_and_one           # was prob_or_one — tightened to match run77
+    allowed_grades: ["A+"]
+    max_trades_per_session: 10
+    p_buy: 0.50
+    p_sell: 0.50
+    p_setup: 0.005
+    p_long: 0.57
+    p_short: 0.57
+    min_hold_bars: 1
+    min_execute_grade: "A+"
+    max_hold_bars: 24
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 400
+      max_risk_per_trade_usd: 150
+      cooldown_after_loss: 15
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.57
+      min_p_short: 0.57
+      p_setup: 0.005
+    exit_prob_confirm_bars: 5
+    persist_prob_bars: 20
+    max_r_giveback: 0.9
+    max_position_contracts: 2
+    auto_contracts: true
+    max_trades_per_day: 10
+    instrument_risk_overrides: {max_stop_points: 8}
+    max_daily_loss: 400
+    max_risk_per_trade_usd: 150
+    max_slippage_points: 6.0
+    open_slippage_cooldown_bars: 6
+    loss_cascade_consecutive_threshold: 2
+    loss_cascade_cooldown_bars: 3
+    loss_cascade_side_lockout_bars: 6
+    cooldown_after_loss: 15
+    loss_streak_limit: 2
+    max_losses_per_day: 3
+    phase2_use_manifest_thresholds: true
+    override_prob_min: 1.0
+    override_hold_conf_min: 1.0
+    phase2_force_open_on_gate_pass: true
+    # Match the live bundle's observed setup scale; 0.06 was too high to ever
+    # synthesize an open on this preset even when the live row was otherwise clean.
+    phase2_force_open_min_setup: 0.007
+    phase2_force_open_min_entry_conf: 0.10
+    phase2_force_open_live_only: false
+    allow_countertrend_in_unresolved: true
+    trend_bias_guard_enabled: true        # was false — re-enable trend bias guard
+    allow_countertrend_fade_in_trend: false  # was true — stop trading against trend
+    protection_mode: stop_and_target
+    publish_min_grade: "B+"
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 2.0      # was 0.60 — let winners run to 2R before tightening
+    pnl_giveback_close_r: 0.75        # was 0.25 — only exit on giveback to 0.75R
+    pnl_stall_bars: 6                 # was 4 — more time for trade to develop
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.15    # was -0.05 — matched to run77
+    pnl_severe_adverse_r: 0.90        # was 0.70 — less eager panic exit
+    pnl_target_arm_min_hold_bars: 5   # was 1 — don't arm target trail immediately
+    pnl_target_arm_min_unrealized_r: 1.0  # was 0.20 — require meaningful profit before trailing
+    pnl_runner_enabled: true
+    pnl_runner_arm_r: 2.25            # was 0.50 — runner only fires at 2.25R
+    pnl_runner_hard_exit_r: 2.50
+    pnl_runner_giveback_r: 0.5        # was 0.15 — give runner room to breathe
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    pnl_shelf_enabled: false          # was true — disabled until shelf steps tuned to ≥2R activation
+    pnl_shelf_arm_mode: step_only
+    pnl_shelf_steps_usd: [100, 200, 400, 700, 1000]
+    pnl_shelf_locks_usd: [25, 100, 250, 500, 750]
+    pnl_shelf_min_hold_bars: 1
+    pnl_shelf_exit_mode: hard_floor
+    pnl_shelf_intrabar: true
+    pnl_shelf_rearm_cooldown_sec: 0
+    phase2_close_min_hold_bars: 2
+    phase2_close_min_hold_sec: 60
+    min_signal_bars: 3
+    new_position_grace_sec: 60
+    scratch_block_bars_max: 1
+    scratch_reentry_cooldown_bars: 0    # OPENED UP: was 3 — allow immediate same-side re-entry after a 1-bar scratch
+    sim_bar_stop_enforcement: true
+    post_stop_cooldown_bars: 1          # OPENED UP: was 3 — shorter wait after a stop
+    vwap_fade_override_pts: 4.5
+    vwap_fade_prob_threshold: 0.50
+    extreme_proximity_pts: 6.0
+    extreme_proximity_prob_boost: 0.05
+    # This preset is meant to run all session hours, not the narrower 07:00-14:00 slice.
+    pre_arm_until: "00:00"
+    pre_unlock_start: "00:00"
+    session_start: "00:00"
+    session_end: "23:59"
+    trade_window_start: "00:00"
+    trade_window_end: "23:59"
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      bar_age_max_sec: 90
+      protection_timeout_sec: 5
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 1
+      cancel_loop_max_updates: 3
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+    allow_replay_exec_to_nt: true
+    replay_execution_intended: true
+    replay_exec_pacing: as_fast_as_possible
+    phase_state:
+      phase_state_machine_enabled: true
+      phase_backfill_lag_sec_threshold: 1500
+      phase_currentness_lag_sec_threshold: 120
+      phase_currentness_confirmations_required: 3
+      readiness_bad_count_to_disarm: 2
+      readiness_good_count_to_rearm: 2
+
+  es_elite_safe_v1:
+    inherits: es_elite_v1
+    description: "ELITE SAFE — strict setup gate, no setup-fail directional bridge entries"
+    phase2_force_open_policy:
+      enabled: false
+      mode: strict_setup
+      legacy_gate_bypass_allowed: false
+      allow_setup_fail_entries: false
+
+  es_elite_aggressive_v1:
+    inherits: es_elite_v1
+    description: "ELITE AGGRESSIVE — explicit setup-fail directional bridge with full safety checks"
+    phase2_force_open_policy:
+      enabled: true
+      mode: directional_bridge_aggressive
+      legacy_gate_bypass_allowed: true
+      allow_setup_fail_entries: true
+      min_direction_prob_long: 0.57
+      min_direction_prob_short: 0.57
+      gate_tod: false
+      gate_ema: false
+      gate_vwap: false
+      require_valid_geometry: true
+      require_stop: true
+      require_target: true
+      allow_only_when_flat: true
+      allow_flip: true
+
+  es_elite_backfill_live_parity_v1:
+    inherits: es_elite_v1
+    description: "ELITE PARITY — loosened entry gates for backfill/live parity-style participation"
+    # Keep gating shape identical across phases; remove threshold bottlenecks that blocked 135.
+    phase2_use_manifest_thresholds: true
+    p_setup: 0.00
+    p_long: 0.50
+    p_short: 0.50
+    p_buy: 0.50
+    p_sell: 0.50
+    probability_thresholds:
+      min_p_long: 0.50
+      min_p_short: 0.50
+      p_setup: 0.00
+    phase2_force_open_policy:
+      enabled: true
+      mode: directional_bridge_aggressive
+      legacy_gate_bypass_allowed: true
+      allow_setup_fail_entries: true
+      min_direction_prob_long: 0.50
+      min_direction_prob_short: 0.50
+      gate_tod: false
+      gate_ema: false
+      gate_vwap: false
+      require_valid_geometry: true
+      require_stop: true
+      require_target: true
+      allow_only_when_flat: true
+      allow_flip: true
+
+  es_elite_restored_v1:
+    inherits: es_elite_v1
+    description: "ELITE RESTORED — parity-restored baseline (29-style gating, conservative force-open)"
+    # Keep restored preset aligned with the known working 29-style execution profile:
+    # gates off by default, 24h effective window when TOD is disabled, and no setup-fail force-open.
+    gate_vwap: false
+    gate_ema: false
+    gate_tod: false
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    phase2_force_open_policy:
+      enabled: false
+      mode: directional_bridge_restored
+      legacy_gate_bypass_allowed: false
+      allow_setup_fail_entries: false
+      restore_old_directional_bridge: true
+      log_aggressive_entries: false
+      min_direction_prob_long: 0.57
+      min_direction_prob_short: 0.57
+      require_valid_geometry: true
+      require_stop: true
+      require_target: true
+      allow_only_when_flat: false
+      allow_flip: true
+    pnl_stair_enabled: true
+    pnl_stair_mode: stop_update_only
+
+  es_elite_restored_parity_p0:
+    inherits: es_elite_restored_v1
+    description: "ELITE RESTORED PARITY P0 — 29-style gating/session baseline"
+    gate_vwap: false
+    gate_ema: false
+    gate_tod: false
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    phase2_force_open_policy:
+      enabled: false
+      mode: directional_bridge_restored
+      legacy_gate_bypass_allowed: false
+      allow_setup_fail_entries: false
+      restore_old_directional_bridge: true
+      log_aggressive_entries: false
+      min_direction_prob_long: 0.57
+      min_direction_prob_short: 0.57
+      require_valid_geometry: true
+      require_stop: true
+      require_target: true
+      allow_only_when_flat: false
+      allow_flip: true
+
+  es_elite_restored_parity_p1_force_open:
+    inherits: es_elite_restored_parity_p0
+    description: "ELITE RESTORED PARITY P1 — constrained force-open on, no legacy bypass"
+    phase2_force_open_policy:
+      enabled: true
+      mode: directional_bridge_restored
+      legacy_gate_bypass_allowed: false
+      allow_setup_fail_entries: true
+      restore_old_directional_bridge: true
+      log_aggressive_entries: true
+      min_direction_prob_long: 0.57
+      min_direction_prob_short: 0.57
+      require_valid_geometry: true
+      require_stop: true
+      require_target: true
+      allow_only_when_flat: false
+      allow_flip: true
+
+  es_elite_restored_p2_gate_vwap:
+    inherits: es_elite_restored_parity_p0
+    description: "ELITE RESTORED P2 — re-enable VWAP gate only"
+    gate_vwap: true
+
+  es_elite_restored_p2_gate_ema:
+    inherits: es_elite_restored_p2_gate_vwap
+    description: "ELITE RESTORED P2 — re-enable VWAP + EMA gates"
+    gate_ema: true
+
+  es_elite_restored_p2_gate_tod:
+    inherits: es_elite_restored_p2_gate_ema
+    description: "ELITE RESTORED P2 — re-enable VWAP + EMA + TOD gates"
+    gate_tod: true
+    trade_window_start: "07:30"
+    trade_window_end: "12:00"
+
+  es_elite_restored_prop_guard_baseline:
+    inherits: es_elite_restored_p2_gate_tod
+    description: "ELITE RESTORED PROP GUARD — keep existing pre-unlock barrier"
+
+  es_elite_restored_prop_guard_aligned:
+    inherits: es_elite_restored_p2_gate_tod
+    description: "ELITE RESTORED PROP GUARD — align pre-unlock to 29-era profitable slices"
+    pre_unlock_start: "07:00"
+
+  # ==========================================================
+  # 🧪 ELITE OPEN TEST — Same model, prop/risk blockers off
+  # Keeps trend-bias regime gating active while bypassing risk guardrails.
+  # ==========================================================
+  es_elite_v1_open_test:
+    description: "ELITE OPEN TEST — retrain_v6_fixed_v2_hyper_016 | risk+prop blockers disabled for replay tests"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: false
+    gate_mode: null
+    allowed_grades: ["A", "B"]
+    max_trades_per_session: 4
+    p_buy: 0.58
+    p_sell: 0.42
+    p_setup: 0.35
+    p_long: 0.58
+    p_short: 0.58
+    weekend_flatten: true
+    disable_risk: false
+    risk:
+      max_daily_loss: 400
+      max_risk_per_trade_usd: 150
+      cooldown_after_loss: 15
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.58
+      min_p_short: 0.58
+      p_setup: 0.35
+    max_hold_bars: 42
+    proba_cut_bad: 0.55
+    exit_prob_confirm_bars: 5
+    persist_prob_bars: 20
+    # TUNED: tighter giveback — exit winners that reverse more than 1.5R (was 2R)
+    max_r_giveback: 1.5
+    # TUNED: scale up to 2 contracts on high-conviction A+ signals (auto_contracts uses prob)
+    max_position_contracts: 2
+    auto_contracts: false
+    max_trades_per_day: 3
+    # Per-trade risk cap set for live consistency and drawdown control.
+    # Other controls stay active: max_daily_loss, max_losses_per_day,
+    # max_position_contracts, cooldown_after_loss, and streak limits.
+    instrument_risk_overrides: {max_stop_points: 8}
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 300
+    # Live lockout controls (fail-closed recovery profile)
+    open_slippage_cooldown_bars: 6
+    loss_cascade_consecutive_threshold: 2
+    loss_cascade_cooldown_bars: 3
+    loss_cascade_side_lockout_bars: 6
+    # Suppress weak long windows observed in loss clusters; retune before re-enabling.
+    weak_long_windows: ["08:10-09:45", "11:30-12:30"]
+    # TUNED: longer cooldown after loss — prevents revenge trading, forces patience
+    cooldown_after_loss: 30
+    loss_streak_limit: 2
+    # FIX-2 (2026-03-09): Belt-and-suspenders — also enforce max_losses in preset so
+    # it is active even without the --max_losses_per_day CLI flag.
+    max_losses_per_day: 3
+    phase2_use_manifest_thresholds: true
+    # Parity hardening (2026-04-02):
+    # Disable LONG override bypass unless explicitly re-enabled via CLI.
+    override_prob_min: 1.0
+    override_hold_conf_min: 1.0
+    phase2_force_open_on_gate_pass: false
+    allow_countertrend_in_unresolved: true
+    # Keep full bracket protection for closer backfill/live behavior.
+    # Runner mode below suppresses the attached fixed target while preserving the protective stop.
+    protection_mode: stop_and_target
+    publish_min_grade: "B+"
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 2.0
+    pnl_giveback_close_r: 1
+    pnl_stall_bars: 6
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.15
+    pnl_severe_adverse_r: 0.90
+    pnl_target_arm_min_hold_bars: 5
+    pnl_target_arm_min_unrealized_r: 1.0
+    pnl_runner_enabled: true
+    pnl_runner_arm_r: 2.25
+    pnl_runner_hard_exit_r: 2.50
+    pnl_runner_giveback_r: 0.50
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    # FIX (2026-03-11): Scratch re-entry block.
+    # After a trade lasting <= scratch_block_bars_max bars, block same-direction
+    # re-entry for scratch_reentry_cooldown_bars bars (0 = disabled).
+    # Prevents: 08:50 LONG scratch (+$12) -> immediate 09:00 LONG re-entry at higher price.
+    scratch_block_bars_max: 1
+    scratch_reentry_cooldown_bars: 3
+    # FIX (2026-03-12): Simulated bar stop enforcement — cap stop fills at stop price
+    # when using bar High/Low (prevents gap-to-open from overstating losses in sim).
+    sim_bar_stop_enforcement: true
+    # FIX (2026-03-12): Post-stop cooldown — block all entries for N bars after a stop.
+    post_stop_cooldown_bars: 3
+    # min_target_r_multiple removed (2026-03-12): was 1.5 — audit showed this blocked
+    # high-probability entries. Risk is controlled by stop size + daily loss limit instead.
+    # FIX (2026-03-11): VWAP fade override — allow high-conviction reversal entries
+    # when price is significantly extended from VWAP (open spike fades).
+    # vwap_fade_override_pts: minimum VWAP distance to trigger override (0 = disabled).
+    # vwap_fade_prob_threshold: max LONG prob for SHORT override (min LONG prob for LONG override).
+    # Example: SHORT at 6800 when VWAP=6793 (dist=7 >= 5) and prob=0.288 (<= 0.28) -> allowed.
+    vwap_fade_override_pts: 4.5
+    vwap_fade_prob_threshold: 0.50
+    # FIX (2026-03-11): Session extreme proximity guard.
+    # Block LONG within extreme_proximity_pts of session high unless prob exceeds
+    # p_buy + extreme_proximity_prob_boost. Block SHORT within pts of session low similarly.
+    # Prevents: 09:00 LONG at 6797.50 (3.25 pts from 6800.75 high) with only prob=0.737.
+    extreme_proximity_pts: 6.0
+    extreme_proximity_prob_boost: 0.05
+
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      # FIX-5 (2026-03-09): 90s bar age threshold (2x 5-min bar interval + 5s grace = 605s
+      # effective from compute_effective_bar_age_max_sec; 90s here is overridden by the
+      # effective calc but kept conservative so CLI --bar_age_max_sec should NOT be
+      # set to 1200 (too permissive). Remove --bar_age_max_sec 1200 from CLI flags.
+      bar_age_max_sec: 90
+      protection_timeout_sec: 5
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 2
+      cancel_loop_max_updates: 5
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+    allow_replay_exec_to_nt: true
+    replay_execution_intended: true
+    replay_exec_pacing: as_fast_as_possible
+    phase_state:
+      phase_state_machine_enabled: true
+      phase_backfill_lag_sec_threshold: 1500
+      phase_currentness_lag_sec_threshold: 120
+      phase_currentness_confirmations_required: 3
+      readiness_bad_count_to_disarm: 2
+      readiness_good_count_to_rearm: 2
+
+  # ==========================================================
+  # 🧪 ELITE REPLAY EVAL — Manifest-first diagnostics variant
+  # ==========================================================
+  es_elite_v1_replay_eval_v1:
+    description: "ELITE REPLAY EVAL — manifest-first thresholds, eval-only replay, lighter setup gate for diagnostics"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016
+    phase2_use_manifest_thresholds: true
+    allow_replay_exec_to_nt: false
+    replay_execution_intended: false
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: false
+    gate_mode: null
+    allowed_grades: ["A", "B", "C"]
+    max_trades_per_session: 6
+    max_trades_per_day: 8
+    p_setup: 0.35
+    p_long: 0.58
+    p_short: 0.58
+    publish_min_grade: "C"
+    max_hold_bars: 16
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 600
+      max_risk_per_trade_usd: 300
+      cooldown_after_loss: 15
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.58
+      min_p_short: 0.58
+      p_setup: 0.35
+
+  # ==========================================================
+  # ✅ PHASE-2 RELAUNCH SAFE PNL — live/paper runtime profile
+  # Used by launch_live_es_parity.ps1 with the relaunch candidate tag.
+  # The CLI/model manifest remains threshold authority via
+  # --phase2_use_manifest_thresholds.
+  # ==========================================================
+  es_maxpack_10_full_send_prop_safe_pnl:
+    description: "PHASE-2 RELAUNCH SAFE PNL — manifest-first runtime profile"
+    session_tz: America/Denver
+    instrument: ES
+    phase2: true
+    phase2_tag: phase2_relaunch_c5_conservative_20260621
+    phase2_use_manifest_thresholds: true
+    allow_preset_manifest_threshold_mismatch: true
+    pre_arm_until: "00:00"
+    pre_unlock_start: "00:00"
+    session_start: "00:00"
+    session_end: "23:59"
+    trade_window_start: "00:00"
+    trade_window_end: "23:59"
+    rth_start: "07:30"
+    rth_end: "14:00"
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: true
+    gate_mode: prob_and_one
+    session_suppression_windows: ""
+    trend_bias_guard_enabled: true
+    allowed_grades: ["A+", "A", "B+", "B"]
+    min_execute_grade: "B"
+    publish_min_grade: "B"
+    max_trades_per_session: 10
+    max_trades_per_day: 10
+    min_minutes_between_entries: 10
+    p_buy: 0.58
+    p_sell: 0.30
+    p_setup: 0.60
+    p_long: 0.58
+    p_short: 0.70
+    probability_thresholds:
+      min_p_long: 0.58
+      min_p_short: 0.70
+      p_setup: 0.60
+    phase2_force_open_on_gate_pass: false
+    phase2_force_open_allow_setup_fail_entries: false
+    override_prob_min: 1.0
+    override_hold_conf_min: 1.0
+    phase2_close_enabled: false
+    protection_mode: stop_and_target
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 2.0
+    pnl_giveback_close_r: 0.75
+    pnl_stall_bars: 6
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.15
+    pnl_severe_adverse_r: 0.90
+    pnl_target_arm_min_hold_bars: 5
+    pnl_target_arm_min_unrealized_r: 1.0
+    pnl_runner_enabled: false
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    max_position_contracts: 1
+    auto_contracts: false
+    instrument_risk_overrides: {max_stop_points: 8}
+    risk:
+      max_daily_loss: 500
+      max_trades_per_day: 10
+      max_risk_per_trade_usd: 300
+      cooldown_after_loss: 20
+      loss_streak_limit: 2
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 300
+    cooldown_after_loss: 20
+    loss_streak_limit: 2
+    max_losses_per_day: 3
+    sim_bar_stop_enforcement: true
+    post_stop_cooldown_bars: 3
+    scratch_block_bars_max: 1
+    scratch_reentry_cooldown_bars: 3
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      bar_age_max_sec: 90
+      protection_timeout_sec: 30
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 1
+      cancel_loop_max_updates: 3
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+    phase_state:
+      phase_state_machine_enabled: true
+      phase_backfill_lag_sec_threshold: 1500
+      phase_currentness_lag_sec_threshold: 120
+      phase_currentness_confirmations_required: 3
+      readiness_bad_count_to_disarm: 2
+      readiness_good_count_to_rearm: 2
+
+  es_modelrun77_parity_v1:
+    inherits: es_elite_v1
+    description: "MODELRUN77 PARITY — replay-only benchmark contract with 07:00-14:00 window"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_fixed_v2_hyper_016
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: false
+    gate_mode: prob_and_one
+    allowed_grades: ["A", "B"]
+    max_trades_per_session: 10
+    phase2_use_manifest_thresholds: true
+    phase2_force_open_on_gate_pass: true
+    phase2_force_open_min_setup: 0.06
+    phase2_force_open_min_entry_conf: 0.10
+    phase2_force_open_allow_setup_fail_entries: true
+    phase2_force_open_live_only: false
+    phase2_decision_policy:
+      countertrend_short_max_trend_score: 1.40
+      countertrend_short_min_setup_when_strong_trend: 0.10
+      short_flip_cooldown_bars_after_long_lineage: 2
+    loss_streak_limit: 6
+    allow_countertrend_in_unresolved: true
+    trend_bias_guard_enabled: false
+    allow_countertrend_fade_in_trend: false
+    protection_mode: stop_and_target
+    publish_min_grade: "B+"
+    pnl_overlay_enabled: true
+    pnl_giveback_activate_r: 2.0
+    pnl_giveback_close_r: 0.75
+    pnl_stall_bars: 6
+    pnl_stall_min_mfe_r: 0.35
+    pnl_stall_close_below_r: -0.15
+    pnl_severe_adverse_r: 0.90
+    pnl_target_arm_min_hold_bars: 5
+    pnl_target_arm_min_unrealized_r: 1.0
+    pnl_runner_enabled: true
+    pnl_runner_arm_r: 2.25
+    pnl_runner_hard_exit_r: 2.50
+    pnl_runner_giveback_r: 0.5
+    pnl_runner_suppress_target: true
+    pnl_runner_ignore_close_before_arm: true
+    pnl_shelf_enabled: false
+    pnl_shelf_arm_mode: step_only
+    pnl_shelf_steps_usd: [100, 200, 400, 700, 1000]
+    pnl_shelf_locks_usd: [25, 100, 250, 500, 750]
+    pnl_shelf_min_hold_bars: 1
+    pnl_shelf_exit_mode: hard_floor
+    pnl_shelf_intrabar: true
+    pnl_shelf_rearm_cooldown_sec: 0
+    phase2_close_enabled: false
+    phase2_close_threshold: 0.90
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+
+    guardrails:
+      price_age_max_sec: 360
+      snapshot_age_max_sec: 450
+      bar_age_max_sec: 90
+      protection_timeout_sec: 5
+      close_emit_timeout_sec: 3
+      reconciliation_grace_bars: 1
+      cancel_loop_max_updates: 3
+      max_exit_pending_sec: 15
+      protection_repair_enabled: true
+      auto_flatten_enabled: true
+
+  es_modelrun77_candidate_strict_v1:
+    inherits: es_modelrun77_parity_v1
+    description: "MODELRUN77 candidate evaluation — model thresholds govern entries; force-open disabled"
+    phase2_tag: modelrun77_final_candidate_20260622
+    phase2_use_manifest_thresholds: true
+    phase2_force_open_on_gate_pass: false
+    phase2_force_open_allow_setup_fail_entries: false
+
+  es_modelrun77_prop_v2_paper:
+    inherits: es_modelrun77_candidate_strict_v1
+    description: "MODELRUN77 prop v2 paper candidate — validation-selected thresholds and tighter loss rails"
+    phase2_tag: modelrun77_prop_v2_20260622
+    phase2_use_manifest_thresholds: true
+    phase2_force_open_on_gate_pass: false
+    phase2_force_open_allow_setup_fail_entries: false
+    max_trades_per_session: 6
+    max_trades_per_day: 6
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 400
+    max_losses_per_day: 3
+    loss_streak_limit: 3
+    cooldown_after_loss: 20
+    risk:
+      max_daily_loss: 500
+      max_trades_per_day: 6
+      max_risk_per_trade_usd: 400
+      max_losses_per_day: 3
+      loss_streak_limit: 3
+      cooldown_after_loss: 20
+
+  es_modelrun77_prop_v3_paper:
+    inherits: es_modelrun77_prop_v2_paper
+    description: "MODELRUN77 prop v3 paper candidate — sealed-safe 0.20 setup threshold"
+    phase2_tag: modelrun77_prop_v3_20260622
+    phase2_use_manifest_thresholds: true
+    phase2_force_open_on_gate_pass: false
+    phase2_force_open_allow_setup_fail_entries: false
+    max_trades_per_session: 6
+    max_trades_per_day: 6
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 400
+    max_losses_per_day: 3
+    loss_streak_limit: 3
+    cooldown_after_loss: 20
+    risk:
+      max_daily_loss: 500
+      max_trades_per_day: 6
+      max_risk_per_trade_usd: 400
+      max_losses_per_day: 3
+      loss_streak_limit: 3
+      cooldown_after_loss: 20
+
+  es_modelrun77_adjusted_v4_paper:
+    inherits: es_modelrun77_candidate_strict_v1
+    description: "MODELRUN77 adjusted v4 paper candidate — original weights with prop-safe LIVE-month tuning"
+    phase2_tag: modelrun77_adjusted_v4_20260622
+    phase2_use_manifest_thresholds: true
+    phase2_force_open_on_gate_pass: true
+    phase2_force_open_live_only: true
+    phase2_force_open_allow_setup_fail_entries: false
+    gate_vwap: false
+    gate_ema: false
+    gate_tod: false
+    max_hold_bars: 12
+    max_trades_per_session: 6
+    max_trades_per_day: 6
+    max_daily_loss: 500
+    max_risk_per_trade_usd: 400
+    max_losses_per_day: 2
+    loss_streak_limit: 2
+    cooldown_after_loss: 20
+    risk:
+      max_daily_loss: 500
+      max_trades_per_day: 6
+      max_risk_per_trade_usd: 400
+      max_losses_per_day: 2
+      loss_streak_limit: 2
+      cooldown_after_loss: 20
+
+  # ==========================================================
+  # ✅ PRO TIER — Good signals, higher volume
+  # Model: retrain_v6_pass1_baseline
+  # Backtest: $60k TEST PnL | $1,650 DD | 71% WR | 3.43 PF
+  # Profile: More trades, looser filters, still under $2k DD
+  # ==========================================================
+  es_pro_v1:
+    description: "PRO — retrain_v6_pass1_baseline | $60k test PnL | 71% WR | 3.43 PF"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_pass1_baseline
+    trade_window_start: "06:30"
+    trade_window_end: "14:00"
+    gate_vwap: false
+    vwap_gate_mode: any
+    gate_ema: false
+    gate_tod: true
+    gate_mode: prob_and_one
+    allowed_grades: ["A", "B", "C"]
+    max_trades_per_session: 8
+    max_trades_per_day: 10
+    p_buy: 0.57
+    p_sell: 0.43
+    p_setup: 0.27
+    p_long: 0.57
+    p_short: 0.57
+    publish_min_grade: "C"
+    max_hold_bars: 24
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 600
+      max_risk_per_trade_usd: 175
+      cooldown_after_loss: 8
+      loss_streak_limit: 3
+    probability_thresholds:
+      min_p_long: 0.57
+      min_p_short: 0.57
+      p_setup: 0.27
+
+  # ==========================================================
+  # 🛡️ PROP SAFE — Conservative fallback
+  # Model: retrain_v3_full (highest consistency)
+  # Backtest: $38k TEST PnL | $1,550 DD | 83% WR | 6.44 PF
+  # Profile: Best for risk-averse prop accounts
+  # ==========================================================
+  es_prop_safe_v1:
+    description: "PROP SAFE — retrain_v3_full | $38k test PnL | 83% WR | 6.44 PF"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v3_full
+    
+    trade_window_start: "07:00"
+    trade_window_end: "14:00"
+    allowed_grades: ["A", "B"]
+    max_trades_per_session: 3
+    max_trades_per_day: 4
+    p_buy: 0.65
+    p_sell: 0.35
+    p_setup: 0.27
+    p_long: 0.65
+    p_short: 0.65
+    publish_min_grade: "B"
+    max_hold_bars: 12
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 250
+      max_risk_per_trade_usd: 100
+      cooldown_after_loss: 25
+      loss_streak_limit: 2
+    probability_thresholds:
+      min_p_long: 0.65
+      min_p_short: 0.65
+      p_setup: 0.27
+
+  # ==========================================================
+  # 🔬 RESEARCH — Unfiltered, full backtest replication
+  # ==========================================================
+  es_research_full_v1:
+    description: "RESEARCH — All trades, no filters (backtest replication)"
+    session_tz: America/Denver
+    phase2: true
+    phase2_tag: retrain_v6_pass1_baseline
+    trade_window_start: "00:00"
+    trade_window_end: "23:59"
+    allowed_grades: ["A", "B", "C"]
+    max_trades_per_session: 100
+    max_trades_per_day: 100
+    p_buy: 0.50
+    p_sell: 0.50
+    p_setup: 0.00
+    p_long: 0.50
+    p_short: 0.50
+    publish_min_grade: "C"
+    max_hold_bars: 100
+    weekend_flatten: true
+    risk:
+      max_daily_loss: 99999
+      max_risk_per_trade_usd: 99999
+      cooldown_after_loss: 0
+      loss_streak_limit: 99
+    probability_thresholds:
+      min_p_long: 0.50
+      min_p_short: 0.50
+      p_setup: 0.00
+
+# ===================================================================
+# risk_guard — Embedded profile ladder (unchanged)
+# ===================================================================
+risk_guard:
+  profiles:
+    rg_01_ultra_conservative:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 220, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:45", "12:20"]}
+      loss_limits:
+        max_losses_per_day: 1
+        max_consecutive_losses: 1
+        max_R_per_day: -1.25
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 45, losses: 1}
+        max_trades_per_day: 2
+        size_after_first_loss_mult: 0.25
+      atr_stops: {k_stop: 1.05, k_t1: 0.85, k_trail: 0.60, min_rr: 1.40}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 30
+        min_signal_bars: 4
+        level_buffer_atr: 0.75
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 20
+        post_minutes: 45
+        post_news_size_minutes: 90
+        post_news_size_multiplier: 0.40
+      anti_overtrade:
+        cooldown_after_stop_min: 25
+        cooldown_after_win_min: 10
+        same_dir_dedupe_min: 35
+        same_dir_break_of_structure_atr: 0.90
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.20, k_t1: 1.00, k_trail: 0.65, min_rr: 1.50}
+
+    rg_02_conservative:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 210, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:48", "12:18"]}
+      loss_limits:
+        max_losses_per_day: 2
+        max_consecutive_losses: 1
+        max_R_per_day: -1.75
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 40, losses: 2}
+        max_trades_per_day: 3
+        size_after_first_loss_mult: 0.40
+      atr_stops: {k_stop: 1.00, k_t1: 0.80, k_trail: 0.55, min_rr: 1.35}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 25
+        min_signal_bars: 3
+        level_buffer_atr: 0.65
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 18
+        post_minutes: 40
+        post_news_size_minutes: 80
+        post_news_size_multiplier: 0.45
+      anti_overtrade:
+        cooldown_after_stop_min: 20
+        cooldown_after_win_min: 8
+        same_dir_dedupe_min: 30
+        same_dir_break_of_structure_atr: 0.85
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.15, k_t1: 0.95, k_trail: 0.60, min_rr: 1.45}
+
+    rg_03_cautious:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 200, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:50", "12:16"]}
+      loss_limits:
+        max_losses_per_day: 2
+        max_consecutive_losses: 2
+        max_R_per_day: -2.00
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 35, losses: 2}
+        max_trades_per_day: 4
+        size_after_first_loss_mult: 0.50
+      atr_stops: {k_stop: 0.95, k_t1: 0.75, k_trail: 0.50, min_rr: 1.30}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 20
+        min_signal_bars: 3
+        level_buffer_atr: 0.60
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 15
+        post_minutes: 35
+        post_news_size_minutes: 70
+        post_news_size_multiplier: 0.50
+      anti_overtrade:
+        cooldown_after_stop_min: 16
+        cooldown_after_win_min: 6
+        same_dir_dedupe_min: 25
+        same_dir_break_of_structure_atr: 0.80
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.10, k_t1: 0.90, k_trail: 0.55, min_rr: 1.40}
+
+    rg_04_balanced:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 190, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:52", "12:14"]}
+      loss_limits:
+        max_losses_per_day: 2
+        max_consecutive_losses: 2
+        max_R_per_day: -2.50
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 30, losses: 2}
+        max_trades_per_day: 5
+        size_after_first_loss_mult: 0.60
+      atr_stops: {k_stop: 0.92, k_t1: 0.72, k_trail: 0.48, min_rr: 1.28}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 18
+        min_signal_bars: 3
+        level_buffer_atr: 0.55
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 15
+        post_minutes: 30
+        post_news_size_minutes: 60
+        post_news_size_multiplier: 0.55
+      anti_overtrade:
+        cooldown_after_stop_min: 14
+        cooldown_after_win_min: 5
+        same_dir_dedupe_min: 22
+        same_dir_break_of_structure_atr: 0.75
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.07, k_t1: 0.87, k_trail: 0.53, min_rr: 1.38}
+
+    rg_05_moderate:
+      tz: "America/Denver"
+      state: {persist_dir: "journal_reports/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 180, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "14:00"}
+      loss_limits:
+        max_losses_per_day: 4
+        max_consecutive_losses: 3
+        max_R_per_day: -2.00
+        max_dollar_loss: 400
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 28, losses: 3}
+        max_trades_per_day: 4
+        size_after_first_loss_mult: 0.65
+      atr_stops: {k_stop: 0.90, k_t1: 0.70, k_trail: 0.46, min_rr: 2.25}
+      confirmations:
+        require_price_vs_vwap: false
+        require_vwap_slope_sign: false
+        ema_5m: []
+        ema_15m: []
+        hysteresis_minutes: 15
+        min_signal_bars: 60
+        level_buffer_atr: 0.50
+      news:
+        enabled: false
+        severity: ["red"]
+        pre_minutes: 12
+        post_minutes: 28
+        post_news_size_minutes: 55
+        post_news_size_multiplier: 0.60
+      anti_overtrade:
+        cooldown_after_stop_min: 5
+        cooldown_after_win_min: 2
+        same_dir_dedupe_min: 10
+        same_dir_break_of_structure_atr: 0.72
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.05, k_t1: 0.85, k_trail: 0.51, min_rr: 1.35}
+
+    rg_06_assertive:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 170, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:55", "12:11"]}
+      loss_limits:
+        max_losses_per_day: 3
+        max_consecutive_losses: 3
+        max_R_per_day: -3.25
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 27, losses: 3}
+        max_trades_per_day: 7
+        size_after_first_loss_mult: 0.70
+      atr_stops: {k_stop: 0.88, k_t1: 0.68, k_trail: 0.45, min_rr: 1.22}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 12
+        min_signal_bars: 2
+        level_buffer_atr: 0.45
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 10
+        post_minutes: 25
+        post_news_size_minutes: 50
+        post_news_size_multiplier: 0.65
+      anti_overtrade:
+        cooldown_after_stop_min: 10
+        cooldown_after_win_min: 3
+        same_dir_dedupe_min: 18
+        same_dir_break_of_structure_atr: 0.70
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.03, k_t1: 0.83, k_trail: 0.50, min_rr: 1.32}
+
+    rg_07_aggressive_light:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 160, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:56", "12:10"]}
+      loss_limits:
+        max_losses_per_day: 3
+        max_consecutive_losses: 3
+        max_R_per_day: -3.50
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 25, losses: 3}
+        max_trades_per_day: 8
+        size_after_first_loss_mult: 0.75
+      atr_stops: {k_stop: 0.85, k_t1: 0.65, k_trail: 0.45, min_rr: 1.20}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 10
+        min_signal_bars: 2
+        level_buffer_atr: 0.40
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 10
+        post_minutes: 20
+        post_news_size_minutes: 45
+        post_news_size_multiplier: 0.70
+      anti_overtrade:
+        cooldown_after_stop_min: 8
+        cooldown_after_win_min: 2
+        same_dir_dedupe_min: 15
+        same_dir_break_of_structure_atr: 0.65
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 1.00, k_t1: 0.80, k_trail: 0.50, min_rr: 1.30}
+
+    rg_08_aggressive:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 150, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:57", "12:09"]}
+      loss_limits:
+        max_losses_per_day: 4
+        max_consecutive_losses: 3
+        max_R_per_day: -4.00
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 22, losses: 4}
+        max_trades_per_day: 9
+        size_after_first_loss_mult: 0.80
+      atr_stops: {k_stop: 0.83, k_t1: 0.62, k_trail: 0.42, min_rr: 1.18}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 8
+        min_signal_bars: 2
+        level_buffer_atr: 0.35
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 8
+        post_minutes: 18
+        post_news_size_minutes: 40
+        post_news_size_multiplier: 0.75
+      anti_overtrade:
+        cooldown_after_stop_min: 7
+        cooldown_after_win_min: 2
+        same_dir_dedupe_min: 13
+        same_dir_break_of_structure_atr: 0.62
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 0.98, k_t1: 0.77, k_trail: 0.47, min_rr: 1.28}
+
+    rg_09_very_aggressive:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 140, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["11:58", "12:08"]}
+      loss_limits:
+        max_losses_per_day: 4
+        max_consecutive_losses: 4
+        max_R_per_day: -4.50
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 20, losses: 4}
+        max_trades_per_day: 10
+        size_after_first_loss_mult: 0.85
+      atr_stops: {k_stop: 0.80, k_t1: 0.60, k_trail: 0.40, min_rr: 1.15}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 6
+        min_signal_bars: 1
+        level_buffer_atr: 0.30
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 8
+        post_minutes: 15
+        post_news_size_minutes: 35
+        post_news_size_multiplier: 0.80
+      anti_overtrade:
+        cooldown_after_stop_min: 6
+        cooldown_after_win_min: 1
+        same_dir_dedupe_min: 10
+        same_dir_break_of_structure_atr: 0.60
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 0.95, k_t1: 0.75, k_trail: 0.45, min_rr: 1.25}
+
+    rg_10_max_aggressive:
+      tz: "America/Denver"
+      state: {persist_dir: "/var/trading-runtime/risk_guard", scope: "instrument_tier", reset_anchor: "rth_start", flush_ms: 120, hard_lock_broadcast: true}
+      session: {rth_start: "06:30", rth_end: "12:59", midday_pause: ["12:03", "12:08"]}
+      loss_limits:
+        max_losses_per_day: 5
+        max_consecutive_losses: 4
+        max_R_per_day: -5.00
+        stop_open_positions_on_limit: true
+        early_loss_lockout: {enabled: true, within_minutes: 18, losses: 5}
+        max_trades_per_day: 12
+        size_after_first_loss_mult: 0.90
+      atr_stops: {k_stop: 0.78, k_t1: 0.58, k_trail: 0.38, min_rr: 1.12}
+      confirmations:
+        require_price_vs_vwap: true
+        require_vwap_slope_sign: true
+        ema_5m: [21, 50]
+        ema_15m: [20, 50]
+        hysteresis_minutes: 5
+        min_signal_bars: 1
+        level_buffer_atr: 0.25
+      news:
+        enabled: true
+        severity: ["red"]
+        pre_minutes: 7
+        post_minutes: 12
+        post_news_size_minutes: 30
+        post_news_size_multiplier: 0.85
+      anti_overtrade:
+        cooldown_after_stop_min: 5
+        cooldown_after_win_min: 1
+        same_dir_dedupe_min: 8
+        same_dir_break_of_structure_atr: 0.55
+      instrument_overrides:
+        NQ:
+          atr_stops: {k_stop: 0.93, k_t1: 0.73, k_trail: 0.43, min_rr: 1.22}

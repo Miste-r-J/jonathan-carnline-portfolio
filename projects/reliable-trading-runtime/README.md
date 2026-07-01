@@ -51,16 +51,36 @@ I deliberately keep prediction, permission, order intent, acknowledgement, and f
 
 | Area | Purpose |
 | --- | --- |
-| [`simplified/na/discord_addons/cli/stream_live_csv.py`](simplified/na/discord_addons/cli/stream_live_csv.py) | Main runtime and execution state machine |
-| [`simplified/na/discord_addons/nt_bridge.py`](simplified/na/discord_addons/nt_bridge.py) | Python-side NinjaTrader protocol and transport |
-| [`simplified/na/discord_addons/ninjatrader/NinjaRepoBridge.cs`](simplified/na/discord_addons/ninjatrader/NinjaRepoBridge.cs) | C# AddOn that receives commands and reports broker state |
-| [`simplified/na/config/master.yaml`](simplified/na/config/master.yaml) | Central strategy and runtime configuration |
-| [`simplified/na/bot/`](simplified/na/bot) | Features, labels, models, training, backtesting, and risk logic |
-| [`simplified/na/tests/`](simplified/na/tests) | Regression tests for execution, safety, parity, data, and model contracts |
-| [`simplified/tools/`](simplified/tools) | Run audits, parity checks, dataset building, and validation tools |
-| [`docs/HOW_IT_WORKS.md`](docs/HOW_IT_WORKS.md) | Detailed walkthrough of the runtime |
-| [`docs/WHAT_I_OWNED.md`](docs/WHAT_I_OWNED.md) | First-person explanation of my engineering work |
-| [`docs/EMPLOYER_BRIEF.md`](docs/EMPLOYER_BRIEF.md) | Recruiter pitch, resume bullets, target roles, and interview walkthrough |
+| [`trading_system/runtime_engine/integrations/cli/live_trading_runtime.py`](trading_system/runtime_engine/integrations/cli/live_trading_runtime.py) | Main runtime and execution state machine |
+| [`trading_system/runtime_engine/integrations/nt_bridge.py`](trading_system/runtime_engine/integrations/nt_bridge.py) | Python-side NinjaTrader protocol and transport |
+| [`trading_system/runtime_engine/integrations/ninjatrader/NinjaRepoBridge.cs`](trading_system/runtime_engine/integrations/ninjatrader/NinjaRepoBridge.cs) | C# AddOn that receives commands and reports broker state |
+| [`trading_system/runtime_engine/runtime_config/master.yaml`](trading_system/runtime_engine/runtime_config/master.yaml) | Central strategy and runtime configuration |
+| [`trading_system/runtime_engine/modeling/`](trading_system/runtime_engine/modeling) | Features, labels, models, training, backtesting, and risk logic |
+| [`trading_system/runtime_engine/tests/`](trading_system/runtime_engine/tests) | Regression tests for execution, safety, parity, data, and model contracts |
+| [`trading_system/development_tools/`](trading_system/development_tools) | Run audits, parity checks, dataset building, and validation tools |
+
+## Repository layout
+
+```text
+trading_system/
+├── runtime_engine/
+│   ├── modeling/              features, labels, training, backtests, and risk logic
+│   ├── integrations/          NinjaTrader, Discord, execution, and transport code
+│   ├── runtime_config/        typed configuration, registries, and YAML settings
+│   ├── data_streaming/        live and replay data-source helpers
+│   ├── shared/                identifiers, metrics, schemas, and common utilities
+│   ├── diagnostics/           PnL, fill, lockout, and platform diagnostics
+│   ├── model_management/      champion-model selection and promotion support
+│   ├── model_explainability/  model attribution and explanation utilities
+│   ├── market_data/           session and market-data normalization
+│   ├── premarket_planner/     scheduled market preparation workflow
+│   ├── runtime_tools/         runtime-focused audit utilities
+│   └── tests/                 regression and contract tests
+├── development_tools/        training, replay, packaging, parity, and audit commands
+├── configuration/            system-level configuration examples
+├── execution_examples/       controlled execution-state fixtures
+└── run_trading_runtime.py    main launcher
+```
 
 ## The engineering problem I focused on
 
@@ -76,17 +96,17 @@ The complete live path requires NinjaTrader 8, market data, trained model artifa
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements-dev.txt
-$env:PYTHONPATH = "$(Resolve-Path .);$(Resolve-Path .\simplified)"
-python -m pytest simplified\na\tests -q
+$env:PYTHONPATH = (Resolve-Path .).Path
+python -m pytest trading_system\runtime_engine\tests -q
 ```
 
 For a focused review of the execution and reliability work:
 
 ```powershell
 python -m pytest `
-  simplified\na\tests\test_nt_bridge.py `
-  simplified\na\tests\test_config_no_duplicate_keys.py `
-  simplified\na\tests\test_prop_guardrails_integration.py -q
+  trading_system\runtime_engine\tests\test_nt_bridge.py `
+  trading_system\runtime_engine\tests\test_config_no_duplicate_keys.py `
+  trading_system\runtime_engine\tests\test_prop_guardrails_integration.py -q
 ```
 
 ## What I would discuss in an interview

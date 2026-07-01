@@ -27,20 +27,19 @@ jobs:
       - name: Verify test collection
         working-directory: projects/reliable-trading-runtime
         env:
-          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime:${{ github.workspace }}/projects/reliable-trading-runtime/simplified
-        run: python -m pytest simplified/na/tests --collect-only -q
+          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime
+        run: python -m pytest trading_system/runtime_engine/tests --collect-only -q
 
       - name: Run stable runtime checks
         working-directory: projects/reliable-trading-runtime
         env:
-          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime:${{ github.workspace }}/projects/reliable-trading-runtime/simplified
+          PYTHONPATH: ${{ github.workspace }}/projects/reliable-trading-runtime
         run: |
           python -m pytest \
-            simplified/na/tests/test_nt_bridge.py \
-            simplified/na/tests/test_config_no_duplicate_keys.py \
-            simplified/na/tests/test_prop_guardrails_integration.py \
-            simplified/na/tests/test_bracket_sign_validator.py \
-            simplified/na/tests/test_prediction_determinism.py \
-            simplified/na/tests/test_triple_barrier_labels.py \
-            simplified/na/tests/test_automation_runtime.py -q
-
+            trading_system/runtime_engine/tests/test_nt_bridge.py \
+            trading_system/runtime_engine/tests/test_config_no_duplicate_keys.py \
+            trading_system/runtime_engine/tests/test_prop_guardrails_integration.py \
+            trading_system/runtime_engine/tests/test_bracket_sign_validator.py \
+            trading_system/runtime_engine/tests/test_prediction_determinism.py \
+            trading_system/runtime_engine/tests/test_triple_barrier_labels.py \
+            trading_system/runtime_engine/tests/test_automation_runtime.py -q
