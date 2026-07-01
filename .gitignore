@@ -1,0 +1,22 @@
+node_modules/
+.npm-cache/
+.vite/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+
+# Local/editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Python case-study runtime artifacts
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Private or generated archives should not be committed by accident.
+*.zip
+!public/reliable-event-bridge.zip

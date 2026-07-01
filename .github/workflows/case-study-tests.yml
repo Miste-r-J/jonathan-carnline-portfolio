@@ -1,0 +1,30 @@
+name: Case study tests
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  reliable-event-bridge:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run tests
+        working-directory: case-studies/reliable-event-bridge
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+          python -m unittest discover -s tests -v

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reliable-event-bridge"
+version = "1.0.0"
+description = "A sanitized reference implementation of fail-closed event bridge reliability patterns."
+requires-python = ">=3.11"
+authors = [{ name = "Jonathan Carnline" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
